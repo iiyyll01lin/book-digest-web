@@ -1,0 +1,20 @@
+[
+  {
+    "id": "never-enough",
+    "slug": "never-enough",
+    "title": "致富的心魔 (Never Enough)",
+    "author": "Andrew Wilkinson",
+    "readDate": "2024-05-01",
+    "summary": "Reflections on wealth, ambition, and contentment from barista to billionaire.",
+    "tags": ["memoir", "business"]
+  },
+  {
+    "id": "why-you-dream",
+    "slug": "why-you-dream",
+    "title": "我們為何會做夢 (Why You Dream)",
+    "author": "Miodrag Petrovic",
+    "readDate": "2024-06-01",
+    "summary": "Exploring the science and meaning of dreams.",
+    "tags": ["psychology"]
+  }
+]
