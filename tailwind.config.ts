@@ -16,6 +16,11 @@ const config: Config = {
           navy: '#0F2E66',
         },
       },
+      spacing: {
+        15: '3.75rem',
+        18: '4.5rem',
+        22: '5.5rem',
+      },
       fontFamily: {
         // replace with real fonts later
         display: ['system-ui', 'sans-serif'],

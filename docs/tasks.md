@@ -295,3 +295,38 @@ P2-204 Sentry integration [Todo | XS]
 - Link Issues to EARS IDs (B01, B02, E01, F01, …) in the description.
 - Maintain status updates in PR titles or labels (`in-progress`, `blocked`, etc.).
 - Use Vercel preview URLs in PR descriptions for design review.
+
+---
+
+## 2025-09-02 Implementation Log (Phase M1 UI alignment)
+
+- Home page
+	- Updated Digital Detox modal to match notebook design (two-column layout + notebook-03 visual). [Done]
+	- Verified build succeeds and pages render. [Done]
+
+- Components
+	- Fixed WhyUs icons to reference correct filenames; ensured assets present in `public/images/elements`. [Done]
+
+- Testing (ad-hoc)
+	- Built project after changes to catch type and compile errors. [Pass]
+	- Smoked Home and Events UI locally (no runtime errors). [Pass]
+
+- Next Up
+	- T-071: Wire external endpoints for TW/NL forms via env and success state. [Todo]
+	- T-090: Route metadata per page + OG images. [Todo]
+	- T-110/T-140: Switch hero and gallery images to `next/image` and compress assets. [Todo]
+
+## 2025-09-03 Implementation Log (Hero fine-tune)
+
+- Home Hero
+	- Added decorative background elements for large screens to match front page design mood. [Done]
+	- Tuned line-height, font sizes, spacing (new spacing tokens 15/18/22) to improve centering balance. [Done]
+
+- Build/Verify
+	- Clean rebuild to resolve transient _document error; final build success. [Pass]
+
+## 2025-09-03 Implementation Log (Header alignment)
+
+- Global Header
+	- Reworked layout to absolutely center the logo independent of side nav widths. [Done]
+	- Adjusted bar height, nav spacing, and language toggle styling to better match front page design. [Done]
