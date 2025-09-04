@@ -132,7 +132,7 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
       setValues({
         firstName: '', lastName: '', age: '', profession: '', email: '', instagram: '', referral: 'Instagram', referralOther: '', consent: false, website: ''
       });
-    } catch (err) {
+  } catch {
       setSuccess('error');
     } finally {
       setSubmitting(false);

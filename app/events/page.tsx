@@ -55,8 +55,8 @@ function Counter({ target }: { target: number }) {
 
 export default function EventsPage() {
   const [activeLoc, setActiveLoc] = useState<'TW' | 'NL'>('TW');
-  const endpointTW = process.env.NEXT_PUBLIC_FORMS_ENDPOINT_TW;
-  const endpointNL = process.env.NEXT_PUBLIC_FORMS_ENDPOINT_NL;
+  const endpointTW = process.env.NEXT_PUBLIC_FORMS_ENDPOINT_TW || '/api/submit?loc=TW';
+  const endpointNL = process.env.NEXT_PUBLIC_FORMS_ENDPOINT_NL || '/api/submit?loc=NL';
 
   return (
     <section className="bg-brand-navy text-white">
