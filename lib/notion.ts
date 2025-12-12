@@ -6,6 +6,7 @@
 // Only a subset is populated from the form; others remain blank/default.
 
 import { Client } from '@notionhq/client';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 export type RegistrationInput = {
   location: 'TW' | 'NL';
@@ -25,7 +26,16 @@ export type RegistrationInput = {
 function getNotion(): Client | null {
   const token = process.env.NOTION_TOKEN;
   if (!token) return null;
-  return new Client({ auth: token });
+
+  const proxy = process.env.https_proxy || process.env.http_proxy;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: Record<string, unknown> = { auth: token };
+
+  if (proxy) {
+    options.agent = new HttpsProxyAgent(proxy);
+  }
+
+  return new Client(options as ConstructorParameters<typeof Client>[0]);
 }
 
 export async function saveRegistrationToNotion(dbId: string, data: RegistrationInput) {

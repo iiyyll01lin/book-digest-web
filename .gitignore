@@ -8,7 +8,12 @@
 /out/
 
 # Environment variables
+.env
 .env*.local
+*.swp
+
+# TypeScript cache
+tsconfig.tsbuildinfo
 
 # test html view
 /test
