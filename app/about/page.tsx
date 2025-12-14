@@ -1,6 +1,7 @@
 'use client';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AboutPage() {
   const t = useTranslations('about');
@@ -34,11 +35,13 @@ export default function AboutPage() {
 
           {/* Reason 1 - A New Book Every Month */}
           <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start mb-16">
-            <div className="flex-shrink-0">
-              <img 
+            <div className="flex-shrink-0 relative w-32 md:w-40 h-32 md:h-40">
+              <Image 
                 src="/images/elements/whyus-06.png" 
                 alt="" 
-                className="w-32 md:w-40 h-auto"
+                fill
+                sizes="(max-width: 768px) 128px, 160px"
+                className="object-contain"
               />
             </div>
             <div className="flex-1">
@@ -53,11 +56,13 @@ export default function AboutPage() {
 
           {/* Reason 2 - Deep, delightful and diverse conversations */}
           <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start mb-16">
-            <div className="flex-shrink-0">
-              <img 
+            <div className="flex-shrink-0 relative w-32 md:w-40 h-32 md:h-40">
+              <Image 
                 src="/images/elements/whyus-07.png" 
                 alt="" 
-                className="w-32 md:w-40 h-auto"
+                fill
+                sizes="(max-width: 768px) 128px, 160px"
+                className="object-contain"
               />
             </div>
             <div className="flex-1">
@@ -72,11 +77,13 @@ export default function AboutPage() {
 
           {/* Reason 3 - Chill Vibes, No Pressure */}
           <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start mb-16">
-            <div className="flex-shrink-0">
-              <img 
+            <div className="flex-shrink-0 relative w-32 md:w-40 h-32 md:h-40">
+              <Image 
                 src="/images/elements/why us-08.png" 
                 alt="" 
-                className="w-32 md:w-40 h-auto"
+                fill
+                sizes="(max-width: 768px) 128px, 160px"
+                className="object-contain"
               />
             </div>
             <div className="flex-1">

@@ -1,5 +1,6 @@
 "use client";
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -37,7 +38,7 @@ export default function Header() {
           <Link href="/books" className={linkClass('/books')}>{t('books')}</Link>
           <Link href="/events" className={linkClass('/events')}>{t('events')}</Link>
           <Link href="/" className="flex items-center justify-center" aria-label="Home">
-            <img src="/images/logo/logo-t.gif" alt="Book Digest logo" className="h-16 w-auto" />
+            <Image src="/images/logo/logo-t.gif" alt="Book Digest logo" width={80} height={64} className="h-16 w-auto" unoptimized />
           </Link>
           <Link href="/about" className={linkClass('/about')}>{t('about')}</Link>
           <Link href="/joinus" className={linkClass('/joinus')}>{t('joinUs')}</Link>
@@ -66,7 +67,7 @@ export default function Header() {
           {/* Centered logo */}
           <div className="flex-1 flex justify-center">
             <Link href="/" className="inline-flex items-center" aria-label="Home">
-              <img src="/images/logo/logo-t.gif" alt="Book Digest logo" className="h-10 w-auto" />
+              <Image src="/images/logo/logo-t.gif" alt="Book Digest logo" width={50} height={40} className="h-10 w-auto" unoptimized />
             </Link>
           </div>
           

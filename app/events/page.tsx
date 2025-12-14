@@ -1,6 +1,7 @@
 'use client';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import Image from 'next/image';
 import stats from '../../data/stats.json';
 import { useEffect, useRef, useState, Suspense } from 'react';
 
@@ -80,11 +81,13 @@ function EventSection({
 }) {
   const imageBlock = (
     <div className="w-full lg:w-1/2">
-      <div className="rounded-2xl overflow-hidden shadow-xl">
-        <img
+      <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3]">
+        <Image
           src={image}
           alt={title}
-          className="w-full h-auto"
+          fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          className="object-cover"
         />
       </div>
     </div>

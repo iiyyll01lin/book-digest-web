@@ -1,6 +1,7 @@
 "use client";
 import books from '../../data/books.json';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Book } from '../../types/book';
 import { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
@@ -48,11 +49,12 @@ export default function BooksPage() {
               <li key={b.id} className="group">
                 <Link href={`/books/${b.slug}`} className="block">
                   <div className="relative aspect-[7/10] bg-white rounded-2xl shadow-xl overflow-hidden">
-                    <img
+                    <Image
                       src={b.coverUrl || '/images/placeholder-cover.svg'}
                       alt={b.displayTitle}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      className="object-cover"
                     />
                     {/* Hover overlay with book summary */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 md:p-4">

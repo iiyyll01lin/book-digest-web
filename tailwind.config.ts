@@ -22,10 +22,10 @@ const config: Config = {
         22: '5.5rem',
       },
       fontFamily: {
-        // Outfit for CTAs and headings (uppercase, increased letter spacing)
-        outfit: ['Outfit', 'system-ui', 'sans-serif'],
+        // Outfit for CTAs and headings (using CSS variable from next/font)
+        outfit: ['var(--font-outfit)', 'Outfit', 'system-ui', 'sans-serif'],
         // Display font for hero sections
-        display: ['Outfit', 'system-ui', 'sans-serif'],
+        display: ['var(--font-outfit)', 'Outfit', 'system-ui', 'sans-serif'],
         // Body text
         body: ['system-ui', 'sans-serif'],
       },

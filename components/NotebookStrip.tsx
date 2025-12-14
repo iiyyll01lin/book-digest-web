@@ -1,6 +1,7 @@
 // filepath: /mnt/d/workspace/book-digest-web/components/NotebookStrip.tsx
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
 export default function NotebookStrip() {
@@ -12,8 +13,8 @@ export default function NotebookStrip() {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-4 md:p-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-4">
             {frames.map((src) => (
-              <div key={src} className="aspect-[4/5] overflow-hidden rounded-xl bg-white/10">
-                <img src={src} alt="Notebook frame" className="w-full h-full object-cover" loading="lazy" />
+              <div key={src} className="relative aspect-[4/5] overflow-hidden rounded-xl bg-white/10">
+                <Image src={src} alt="Notebook frame" fill sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw" className="object-cover" />
               </div>
             ))}
           </div>

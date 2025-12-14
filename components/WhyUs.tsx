@@ -1,5 +1,6 @@
 'use client';
 import { useState, useCallback } from 'react';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
 export default function WhyUs() {
@@ -63,11 +64,13 @@ export default function WhyUs() {
             {/* Main Content: Image Left + Text Right - Fixed height container */}
             <div className="flex-1 flex flex-col md:flex-row items-center gap-6 md:gap-10 min-h-[280px] md:min-h-[240px]">
               {/* Large Image on Left - Fixed size container */}
-              <div className="flex-shrink-0 w-40 md:w-56 lg:w-64 h-40 md:h-56 lg:h-64 flex items-center justify-center">
-                <img 
+              <div className="flex-shrink-0 w-40 md:w-56 lg:w-64 h-40 md:h-56 lg:h-64 relative">
+                <Image 
                   src={currentItem.icon} 
                   alt="" 
-                  className="max-w-full max-h-full object-contain transition-opacity duration-300" 
+                  fill
+                  sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 256px"
+                  className="object-contain transition-opacity duration-300" 
                 />
               </div>
               

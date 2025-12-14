@@ -1,5 +1,6 @@
 'use client';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 export default function Footer() {
   const t = useTranslations('footer');
@@ -11,7 +12,7 @@ export default function Footer() {
           <div className="h-px flex-1 bg-white/30" />
           <div className="flex items-center gap-2">
             <a href="https://www.instagram.com/bookdigest_tw/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
-              <img src="/images/logo/IG%20iocn.PNG" alt="Instagram" className="h-8 w-auto" />
+              <Image src="/images/logo/IG iocn.PNG" alt="Instagram" width={64} height={64} className="h-8 w-auto" unoptimized />
             </a>
           </div>
           <div className="h-px flex-1 bg-white/30" />

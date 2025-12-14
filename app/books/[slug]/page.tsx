@@ -1,6 +1,7 @@
 'use client';
 import books from '../../../data/books.json';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Book } from '../../../types/book';
 import BookArticleSidebar from '@/components/BookArticleSidebar';
@@ -41,11 +42,13 @@ export default function BookArticlePage({ params }: { params: { slug: string } }
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
             {/* Book Cover */}
             <div className="flex-shrink-0">
-              <div className="w-48 md:w-56 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/20">
-                <img
+              <div className="relative w-48 md:w-56 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/20">
+                <Image
                   src={book.coverUrl || '/images/placeholder-cover.svg'}
                   alt={book.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 192px, 224px"
+                  className="object-cover"
                 />
               </div>
             </div>

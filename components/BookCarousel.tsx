@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Book = {
   id: string | number;
@@ -127,12 +128,13 @@ export default function BookCarousel({
                   href={`/books/${book.slug}`}
                   className="group block"
                 >
-                  <div className="aspect-[2/3] w-24 sm:w-28 md:w-32 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-105 group-hover:shadow-xl">
-                    <img
+                  <div className="relative aspect-[2/3] w-24 sm:w-28 md:w-32 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-105 group-hover:shadow-xl">
+                    <Image
                       src={book.coverUrl || '/images/placeholder-cover.svg'}
                       alt={book.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, 128px"
+                      className="object-cover"
                     />
                   </div>
                   <div className="mt-2 text-center">

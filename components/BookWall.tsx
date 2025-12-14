@@ -1,6 +1,7 @@
 // filepath: /mnt/d/workspace/book-digest-web/components/BookWall.tsx
 "use client";
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
 import booksData from '@/data/books.json';
 
@@ -44,11 +45,12 @@ export default function BookWall() {
             <li key={book.id} className="group">
               <Link href={`/books/${book.slug}`} className="block">
                 <div className="relative aspect-[7/10] overflow-hidden rounded-xl md:rounded-2xl bg-white shadow ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-[1.03]">
-                  <img
+                  <Image
                     src={book.coverUrl || '/images/placeholder-cover.svg'}
                     alt={book.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 16vw, 12.5vw"
+                    className="object-cover"
                   />
                   {/* Hover overlay with book info */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-2 md:p-3">

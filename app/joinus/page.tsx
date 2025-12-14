@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import SignupForm from '@/components/SignupForm';
 
@@ -67,11 +68,13 @@ function JoinUsContent() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch">
           {/* Left: Event Poster */}
           <div className="flex">
-            <div className="w-full rounded-2xl overflow-hidden shadow-xl">
-              <img
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-xl aspect-[3/4]">
+              <Image
                 src={activeLocation === 'TW' ? '/images/elements/AD-16.png' : '/images/elements/AD-15.png'}
                 alt={activeLocation === 'TW' ? 'Taiwan Book Club' : 'Netherlands Book Club'}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
               />
             </div>
           </div>
@@ -135,11 +138,13 @@ function JoinUsContent() {
 
             {/* Right: Detox Poster */}
             <div>
-              <div className="rounded-2xl overflow-hidden shadow-xl">
-                <img
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[3/4]">
+                <Image
                   src="/images/elements/AD-17.png"
                   alt="Digital Detox"
-                  className="w-full h-auto"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
                 />
               </div>
             </div>

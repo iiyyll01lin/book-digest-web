@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 
 type PageFlipProps = {
   images?: string[];
@@ -143,7 +144,7 @@ export default function PageFlipAnimation({
 
         {/* Base layer - shows the destination page */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src={images[
               isFlipping 
                 ? (flipDirection === 'next' 
@@ -152,7 +153,9 @@ export default function PageFlipAnimation({
                 : currentPage
             ]}
             alt={`Page ${currentPage + 1}`}
-            className="w-full h-full object-contain rounded-lg shadow-xl"
+            fill
+            sizes="(max-width: 768px) 100vw, 448px"
+            className="object-contain rounded-lg shadow-xl"
           />
         </div>
 
@@ -170,10 +173,12 @@ export default function PageFlipAnimation({
               className="absolute inset-0"
               style={{ backfaceVisibility: 'hidden' }}
             >
-              <img
+              <Image
                 src={images[currentPage]}
                 alt=""
-                className="w-full h-full object-contain rounded-lg shadow-2xl"
+                fill
+                sizes="(max-width: 768px) 100vw, 448px"
+                className="object-contain rounded-lg shadow-2xl"
               />
               {/* Dynamic shadow based on flip type */}
               <div className={`absolute inset-0 rounded-lg transition-opacity ${
@@ -191,10 +196,12 @@ export default function PageFlipAnimation({
                 transform: 'rotateY(180deg)',
               }}
             >
-              <img
+              <Image
                 src={images[flipDirection === 'next' ? Math.min(currentPage + 1, images.length - 1) : Math.max(currentPage - 1, 0)]}
                 alt=""
-                className="w-full h-full object-contain rounded-lg shadow-2xl"
+                fill
+                sizes="(max-width: 768px) 100vw, 448px"
+                className="object-contain rounded-lg shadow-2xl"
               />
             </div>
           </div>

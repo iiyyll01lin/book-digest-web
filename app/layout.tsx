@@ -6,6 +6,14 @@ import LangToggle from '@/components/LangToggle';
 import { defaultSEO } from '@/lib/seo';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
+import { Outfit } from 'next/font/google';
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
 
 export const metadata: Metadata = defaultSEO;
 
@@ -14,15 +22,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="h-full bg-brand-navy">
+    <html lang={locale} className={`h-full bg-brand-navy ${outfit.variable}`}>
       <head>
-        {/* Outfit font for CTAs and headings */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         {/* Favicon and PWA */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
