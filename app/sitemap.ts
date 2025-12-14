@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
-import books from '@/data/books.json';
+import { getBooks } from '@/lib/books';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bookdigest.club';
+  const books = await getBooks();
 
   // Static pages
   const staticPages = [

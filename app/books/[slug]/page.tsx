@@ -1,25 +1,14 @@
-'use client';
-import books from '../../../data/books.json';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import type { Book } from '../../../types/book';
 import BookArticleSidebar from '@/components/BookArticleSidebar';
-import { useTranslations, useLocale } from 'next-intl';
+import { getTranslations, getLocale } from 'next-intl/server';
+import { getBooksSync, getLocalizedBook } from '@/lib/books';
 
-// Helper to get localized book data
-function getLocalizedBook(book: Book, locale: string) {
-  return {
-    ...book,
-    displayTitle: locale === 'en' && book.titleEn ? book.titleEn : book.title,
-    displaySummary: locale === 'en' && book.summaryEn ? book.summaryEn : book.summary,
-  };
-}
-
-export default function BookArticlePage({ params }: { params: { slug: string } }) {
-  const t = useTranslations('books');
-  const locale = useLocale();
-  const allBooks = books as Book[];
+export default async function BookArticlePage({ params }: { params: { slug: string } }) {
+  const t = await getTranslations('books');
+  const locale = await getLocale();
+  const allBooks = getBooksSync();
   const rawBook = allBooks.find((b) => b.slug === params.slug);
   if (!rawBook) return notFound();
   

@@ -1,36 +1,21 @@
-// filepath: /mnt/d/workspace/book-digest-web/components/BookWall.tsx
-"use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { useTranslations, useLocale } from 'next-intl';
-import booksData from '@/data/books.json';
+import { getTranslations, getLocale } from 'next-intl/server';
+import { getBooksSync, getLocalizedTitle } from '@/lib/books';
 
-type Book = {
-  id: string;
-  slug: string;
-  title: string;
-  titleEn?: string;
-  author: string;
-  coverUrl?: string;
-  readDate?: string;
-};
-
-// Helper to get localized book title
-function getLocalizedTitle(book: Book, locale: string): string {
-  if (locale === 'en' && book.titleEn) return book.titleEn;
-  return book.title;
-}
-
-export default function BookWall() {
-  const t = useTranslations('home');
-  const locale = useLocale();
-  // Sort books by readDate descending (newest first) and take first 40
-  const sortedBooks = [...(booksData as Book[])].sort((a, b) => {
-    if (!a.readDate && !b.readDate) return 0;
-    if (!a.readDate) return 1;
-    if (!b.readDate) return -1;
-    return new Date(b.readDate).getTime() - new Date(a.readDate).getTime();
-  }).slice(0, 40);
+export default async function BookWall() {
+  const t = await getTranslations('home');
+  const locale = await getLocale();
+  
+  // Get books and sort by readDate descending (newest first), take first 40
+  const sortedBooks = [...getBooksSync()]
+    .sort((a, b) => {
+      if (!a.readDate && !b.readDate) return 0;
+      if (!a.readDate) return 1;
+      if (!b.readDate) return -1;
+      return new Date(b.readDate).getTime() - new Date(a.readDate).getTime();
+    })
+    .slice(0, 40);
 
   return (
     <section aria-labelledby="books-wall-heading" className="bg-brand-navy">

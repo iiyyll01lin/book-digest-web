@@ -1,0 +1,94 @@
+"use client";
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import Modal from '@/components/Modal';
+import PageFlipAnimation from '@/components/PageFlipAnimation';
+
+export default function HomeHero() {
+  const [open, setOpen] = useState(false);
+  const t = useTranslations('home');
+  const tModal = useTranslations('modal');
+  
+  return (
+    <>
+      <section className="relative bg-brand-navy overflow-hidden">
+        {/* Decorative background elements (large screens) */}
+        <div aria-hidden="true" className="pointer-events-none hidden lg:block absolute inset-0">
+          <div className="absolute -top-20 -right-24 h-64 w-64 rounded-full bg-white/5 blur-2xl" />
+          <div className="absolute bottom-0 -left-20 h-80 w-80 rounded-full bg-brand-pink/10 blur-3xl" />
+        </div>
+
+        <div className="relative mx-auto max-w-6xl px-6 pt-18 pb-18 lg:pt-22 lg:pb-22">
+          <div className="grid items-center gap-8 lg:gap-12 md:grid-cols-2 text-center md:text-left">
+            <div>
+              <h1 className="mt-6 text-[2.5rem] md:text-[3rem] font-bold text-white font-display leading-[1.2] tracking-[0.01em]">
+                {t('hero.title')}
+                <br /> {t('hero.titleLine2')}
+              </h1>
+              <p className="mt-4 text-base md:text-lg text-white/90 max-w-2xl mx-auto md:mx-0 leading-relaxed">
+                {t('hero.subtitle')}
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-3">
+                <a href="/events" className="inline-flex min-h-11 items-center rounded-full bg-brand-pink px-6 py-3 font-semibold text-brand-navy shadow hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-pink focus-visible:ring-offset-brand-navy uppercase tracking-wider font-outfit">{t('hero.ctaBookClub')}</a>
+                <button onClick={() => setOpen(true)} className="inline-flex min-h-11 items-center rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy uppercase tracking-wider font-outfit">{t('hero.ctaDetox')}</button>
+              </div>
+            </div>
+            {/* Page Flip Animation - enlarged for better visibility */}
+            <div className="mt-10 md:mt-0 min-h-[400px] md:min-h-[480px]">
+              <PageFlipAnimation
+                images={[
+                  '/images/notebook/notebook-03.png',
+                  '/images/notebook/notebook-04.png',
+                  '/images/notebook/notebook-05.png',
+                  '/images/notebook/notebook-06.png',
+                ]}
+                autoPlay={true}
+                interval={4000}
+                className="w-full max-w-3xl mx-auto md:ml-auto md:mr-0"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Modal open={open} onClose={() => setOpen(false)} title={tModal('detoxTitle')}>
+        {/* Layout inspired by docs/ui/notebook-03 1.png */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-stretch">
+          {/* Visual column: Page Flip Animation */}
+          <div className="order-last md:order-first">
+            <div className="rounded-xl overflow-hidden bg-white/10 border border-white/15 shadow">
+              <PageFlipAnimation
+                images={[
+                  '/images/notebook/notebook-01.png',
+                  '/images/notebook/notebook-02.png',
+                  '/images/notebook/notebook-03.png',
+                  '/images/notebook/notebook-04.png',
+                  '/images/notebook/notebook-05.png',
+                  '/images/notebook/notebook-06.png',
+                ]}
+                autoPlay={true}
+                interval={3000}
+                className="w-full"
+              />
+            </div>
+          </div>
+          {/* Content column */}
+          <div>
+            <p>
+              {tModal('detoxIntro')}
+            </p>
+            <ul className="mt-3 list-disc pl-5 space-y-1">
+              <li>{tModal('detoxFeature1')}</li>
+              <li>{tModal('detoxFeature2')}</li>
+              <li>{tModal('detoxFeature3')}</li>
+            </ul>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <a href="/events#detox" className="inline-flex items-center rounded-full bg-brand-pink text-brand-navy px-4 py-2 font-semibold">{tModal('imIn')}</a>
+              <button onClick={() => setOpen(false)} className="inline-flex items-center rounded-full border border-white/30 px-4 py-2 font-semibold text-white">{tModal('maybeLater')}</button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+}
