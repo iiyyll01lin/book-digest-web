@@ -1,8 +1,10 @@
-'use client';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export default function TermsPage() {
-  const t = useTranslations('terms');
+// Force static generation
+export const dynamic = 'force-static';
+
+export default async function TermsPage() {
+  const t = await getTranslations('terms');
   return (
     <section className="bg-brand-navy text-white min-h-screen">
       <div className="mx-auto max-w-4xl px-6 py-16">
