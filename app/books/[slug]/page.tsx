@@ -1,19 +1,37 @@
+'use client';
 import books from '../../../data/books.json';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Book } from '../../../types/book';
 import BookArticleSidebar from '@/components/BookArticleSidebar';
+import { useTranslations, useLocale } from 'next-intl';
+
+// Helper to get localized book data
+function getLocalizedBook(book: Book, locale: string) {
+  return {
+    ...book,
+    displayTitle: locale === 'en' && book.titleEn ? book.titleEn : book.title,
+    displaySummary: locale === 'en' && book.summaryEn ? book.summaryEn : book.summary,
+  };
+}
 
 export default function BookArticlePage({ params }: { params: { slug: string } }) {
+  const t = useTranslations('books');
+  const locale = useLocale();
   const allBooks = books as Book[];
-  const book = allBooks.find((b) => b.slug === params.slug);
-  if (!book) return notFound();
+  const rawBook = allBooks.find((b) => b.slug === params.slug);
+  if (!rawBook) return notFound();
+  
+  const book = getLocalizedBook(rawBook, locale);
 
   // Get other articles for sidebar (exclude current)
   const otherArticles = allBooks
     .filter((b) => b.slug !== params.slug)
     .slice(0, 5)
-    .map((b) => ({ slug: b.slug, title: b.title }));
+    .map((b) => ({ 
+      slug: b.slug, 
+      title: locale === 'en' && b.titleEn ? b.titleEn : b.title 
+    }));
 
   return (
     <article className="bg-white min-h-screen">
@@ -35,7 +53,7 @@ export default function BookArticlePage({ params }: { params: { slug: string } }
             {/* Book Info */}
             <div className="text-center md:text-left text-white">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-                {book.title}
+                {book.displayTitle}
               </h1>
               <p className="mt-3 text-lg md:text-xl text-white/80">
                 by {book.author}
@@ -54,7 +72,7 @@ export default function BookArticlePage({ params }: { params: { slug: string } }
               )}
               {book.readDate && (
                 <p className="mt-4 text-sm text-white/60">
-                  讀書會日期：{new Date(book.readDate).toLocaleDateString('zh-TW', {
+                  {t('bookClubDate')}{new Date(book.readDate).toLocaleDateString(locale === 'en' ? 'en-US' : 'zh-TW', {
                     year: 'numeric',
                     month: 'long',
                   })}
@@ -79,46 +97,46 @@ export default function BookArticlePage({ params }: { params: { slug: string } }
           <main className="lg:col-span-2">
             {/* Summary Section */}
             <section className="prose prose-lg max-w-none">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">📖 書籍簡介</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">📖 {t('summary')}</h2>
               <p className="text-gray-700 leading-relaxed text-lg">
-                {book.summary || '這本書帶給我們許多深刻的思考與啟發...'}
+                {book.displaySummary || (locale === 'en' ? 'This book offers profound insights and inspiration...' : '這本書帶給我們許多深刻的思考與啟發...')}
               </p>
             </section>
 
             {/* Reading Notes Placeholder */}
             <section className="mt-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">✍️ 讀書筆記</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">✍️ {t('readingNotes')}</h2>
               <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                 <p className="text-gray-600 italic">
-                  詳細的讀書筆記即將上線，敬請期待...
+                  {t('notesComingSoon')}
                 </p>
                 <p className="text-gray-500 text-sm mt-2">
-                  想要第一時間收到更新通知嗎？歡迎加入我們的讀書會！
+                  {t('notesNotice')}
                 </p>
                 <Link
                   href="/events"
                   className="inline-flex items-center mt-4 px-4 py-2 bg-brand-pink text-brand-navy font-semibold rounded-full hover:brightness-110 transition-all"
                 >
-                  立即報名
+                  {t('register')}
                 </Link>
               </div>
             </section>
 
             {/* Discussion Points */}
             <section className="mt-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">💬 討論重點</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">💬 {t('discussionPoints')}</h2>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-pink/20 text-brand-navy flex items-center justify-center text-sm font-bold">1</span>
-                  <span className="text-gray-700">這本書最讓你印象深刻的是什麼？</span>
+                  <span className="text-gray-700">{t('question1')}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-pink/20 text-brand-navy flex items-center justify-center text-sm font-bold">2</span>
-                  <span className="text-gray-700">你會如何應用書中的概念在生活中？</span>
+                  <span className="text-gray-700">{t('question2')}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-pink/20 text-brand-navy flex items-center justify-center text-sm font-bold">3</span>
-                  <span className="text-gray-700">有沒有什麼觀點你不太認同？</span>
+                  <span className="text-gray-700">{t('question3')}</span>
                 </li>
               </ul>
             </section>
@@ -126,7 +144,7 @@ export default function BookArticlePage({ params }: { params: { slug: string } }
             {/* External Links */}
             {book.links && (
               <section className="mt-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">🔗 相關連結</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">🔗 {t('relatedLinks')}</h2>
                 <div className="flex flex-wrap gap-3">
                   {book.links.publisher && (
                     <a
@@ -138,7 +156,7 @@ export default function BookArticlePage({ params }: { params: { slug: string } }
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                       </svg>
-                      購書連結
+                      {t('buyBook')}
                     </a>
                   )}
                   {book.links.notes && (
@@ -151,7 +169,7 @@ export default function BookArticlePage({ params }: { params: { slug: string } }
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
-                      完整筆記
+                      {t('fullNotes')}
                     </a>
                   )}
                 </div>
@@ -167,7 +185,7 @@ export default function BookArticlePage({ params }: { params: { slug: string } }
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                返回書單
+                {t('backToBooks')}
               </Link>
             </div>
           </main>

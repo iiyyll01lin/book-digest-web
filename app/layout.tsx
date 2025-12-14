@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import LangToggle from '@/components/LangToggle';
 import { defaultSEO } from '@/lib/seo';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-screen flex flex-col text-white font-body">
         <NextIntlClientProvider messages={messages}>
+          <LangToggle />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

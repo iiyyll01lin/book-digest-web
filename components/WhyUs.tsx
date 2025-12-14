@@ -1,37 +1,115 @@
+'use client';
+import { useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
+
 export default function WhyUs() {
+  const t = useTranslations('about');
+  
   const items = [
     {
-      title: 'Monthly Picks',
-      desc: 'A new book every month—from fiction to psychology and beyond.',
+      titleKey: 'reason1Title',
+      descKey: 'reason1Desc',
       icon: '/images/elements/whyus-06.png',
     },
     {
-      title: 'Welcoming Community',
-      desc: 'Friendly, moderated discussions for all reading levels.',
+      titleKey: 'reason2Title',
+      descKey: 'reason2Desc',
       icon: '/images/elements/whyus-07.png',
     },
     {
-      title: 'Grow Together',
-      desc: 'Try topics outside your comfort zone and be surprised.',
+      titleKey: 'reason3Title',
+      descKey: 'reason3Desc',
       icon: '/images/elements/why us-08.png',
     },
   ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToPrev = useCallback(() => {
+    setCurrentIndex((prev) => (prev <= 0 ? items.length - 1 : prev - 1));
+  }, [items.length]);
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev >= items.length - 1 ? 0 : prev + 1));
+  }, [items.length]);
+
+  const currentItem = items[currentIndex];
+
   return (
     <section aria-labelledby="why-us-heading" className="bg-brand-navy">
       <div className="mx-auto max-w-6xl px-6 py-14">
-        <h2 id="why-us-heading" className="text-2xl md:text-3xl font-bold tracking-wide font-outfit">Why Us</h2>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {items.map((it) => (
-            <div key={it.title} className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="flex items-start gap-4">
-                <img src={it.icon} alt="" className="h-10 w-10 object-contain" />
-                <div>
-                  <div className="font-semibold text-white font-outfit">{it.title}</div>
-                  <p className="text-white/80 text-sm mt-1">{it.desc}</p>
-                </div>
+        {/* Centered Title */}
+        <h2 id="why-us-heading" className="text-2xl md:text-3xl font-bold tracking-wide font-outfit text-center">{t('whyUs')}</h2>
+        
+        {/* Carousel for all screen sizes */}
+        <div className="mt-10 relative">
+          {/* Decorative stars */}
+          <div className="absolute -top-4 left-1/4 text-yellow-400 text-xl hidden md:block">★</div>
+          <div className="absolute top-1/2 left-[15%] text-yellow-400 text-sm hidden md:block">★</div>
+          <div className="absolute bottom-8 left-[20%] text-yellow-400 text-lg hidden md:block">★</div>
+
+          <div className="flex items-center gap-4 md:gap-8">
+            {/* Left Arrow */}
+            <button
+              onClick={goToPrev}
+              className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-pink/20 hover:bg-brand-pink/40 text-brand-pink flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+              aria-label="Previous item"
+            >
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            {/* Main Content: Image Left + Text Right - Fixed height container */}
+            <div className="flex-1 flex flex-col md:flex-row items-center gap-6 md:gap-10 min-h-[280px] md:min-h-[240px]">
+              {/* Large Image on Left - Fixed size container */}
+              <div className="flex-shrink-0 w-40 md:w-56 lg:w-64 h-40 md:h-56 lg:h-64 flex items-center justify-center">
+                <img 
+                  src={currentItem.icon} 
+                  alt="" 
+                  className="max-w-full max-h-full object-contain transition-opacity duration-300" 
+                />
+              </div>
+              
+              {/* Text Content on Right - Fixed height */}
+              <div className="flex-1 text-center md:text-left min-h-[120px] md:min-h-[140px] flex flex-col justify-center">
+                <h3 className="font-bold text-white font-outfit text-xl md:text-2xl lg:text-3xl">
+                  {t(currentItem.titleKey)}
+                </h3>
+                <p className="text-white/80 text-sm md:text-base lg:text-lg mt-3 md:mt-4 leading-relaxed whitespace-pre-line max-w-lg line-clamp-5">
+                  {t(currentItem.descKey)}
+                </p>
               </div>
             </div>
-          ))}
+
+            {/* Right Arrow */}
+            <button
+              onClick={goToNext}
+              className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-pink/20 hover:bg-brand-pink/40 text-brand-pink flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
+              aria-label="Next item"
+            >
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center gap-2 mt-8">
+            {items.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  idx === currentIndex
+                    ? 'bg-brand-pink w-6'
+                    : 'bg-white/30 hover:bg-white/50 w-2'
+                }`}
+                aria-label={`Go to item ${idx + 1}`}
+                aria-current={idx === currentIndex ? 'true' : undefined}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

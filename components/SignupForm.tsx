@@ -1,12 +1,13 @@
 'use client';
 import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { z } from 'zod';
 
 type Location = 'TW' | 'NL';
 
 export type SignupFormProps = {
   location: Location;
-  endpoint?: string; // optional external processor endpoint
+  endpoint?: string;
 };
 
 const baseSchema = z.object({
@@ -29,11 +30,12 @@ const baseSchema = z.object({
   consent: z.literal(true, {
     errorMap: () => ({ message: 'You must accept the consent to proceed' }),
   }),
-  // honeypot
   website: z.string().optional(),
 });
 
 export default function SignupForm({ location, endpoint }: SignupFormProps) {
+  const t = useTranslations('form');
+  const tEvents = useTranslations('events');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<null | 'ok' | 'error'>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -47,7 +49,7 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
     referral: 'Instagram' as 'Instagram' | 'Facebook' | 'Others',
     referralOther: '',
     consent: false,
-    website: '', // honeypot
+    website: '',
   });
 
   const schema = useMemo(() =>
@@ -70,7 +72,6 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
     const isCheckbox = (target as HTMLInputElement).type === 'checkbox';
     const nextValue = isCheckbox ? (target as HTMLInputElement).checked : target.value;
     setValues((v) => ({ ...v, [name]: nextValue }));
-    // clear field-level error on change
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
@@ -79,7 +80,6 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
     setSubmitting(true);
     setSuccess(null);
 
-    // validate
     const res = schema.safeParse(values);
     if (!res.success) {
       const fieldErrors: Record<string, string> = {};
@@ -92,7 +92,6 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
       return;
     }
 
-    // honeypot: silently succeed to avoid signaling bots
     if (values.website && values.website.trim().length > 0) {
       setSuccess('ok');
       setSubmitting(false);
@@ -123,129 +122,150 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
         });
         if (!resp.ok) throw new Error('Request failed');
       } else {
-        // simulate network
         await new Promise((r) => setTimeout(r, 800));
       }
 
       setSuccess('ok');
-      // clear PII from client state after success
       setValues({
         firstName: '', lastName: '', age: '', profession: '', email: '', instagram: '', referral: 'Instagram', referralOther: '', consent: false, website: ''
       });
-  } catch {
+    } catch {
       setSuccess('error');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const field = (
-    id: string,
-    label: string,
-    input: JSX.Element,
-    help?: string
-  ) => (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-white">{label}</label>
-      <div className="mt-1">{input}</div>
-      <p className="mt-1 text-xs text-red-300" aria-live="polite">{errors[id]}</p>
-      {help ? <p className="mt-1 text-xs text-white/70">{help}</p> : null}
-    </div>
-  );
+  const inputClass = (hasError: boolean) =>
+    `w-full rounded-lg bg-[#2a3f5f] px-4 py-3 text-white placeholder-white/40 outline-none border-0 focus:ring-2 focus:ring-brand-pink ${hasError ? 'ring-2 ring-red-400' : ''}`;
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-lg p-4 md:p-6">
-      <h3 className="text-lg font-semibold text-white">Sign up — {location === 'TW' ? 'Taiwan' : 'Netherlands'}</h3>
+    <div>
+      <h3 className="text-lg font-semibold text-white mb-6">
+        Sign up — {location === 'TW' ? tEvents('taiwan') : tEvents('netherlands')}
+      </h3>
+
       {success === 'ok' ? (
-        <div className="mt-3 rounded-md bg-emerald-500/15 border border-emerald-400/30 text-emerald-200 p-3" role="status" aria-live="polite">
-          Thanks! Your registration has been received. We’ll be in touch soon.
+        <div className="rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-200 p-4" role="status">
+          {t('success')}
         </div>
       ) : success === 'error' ? (
-        <div className="mt-3 rounded-md bg-red-500/15 border border-red-400/30 text-red-200 p-3" role="status" aria-live="polite">
-          Sorry, something went wrong. Please try again later or email us.
+        <div className="rounded-lg bg-red-500/15 border border-red-400/30 text-red-200 p-4" role="status">
+          {t('error')}
         </div>
       ) : null}
-      <form className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubmit} noValidate>
-        {/* honeypot */}
+
+      <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+        {/* Honeypot */}
         <input type="text" name="website" value={values.website} onChange={onChange} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
-        {field('firstName', 'First name', (
-          <input
-            id="firstName" name="firstName" value={values.firstName} onChange={onChange}
-            className={`w-full rounded-md bg-white/10 px-3 py-2 outline-none ring-1 ${errors.firstName ? 'ring-red-400' : 'ring-white/20'} focus:ring-2 focus:ring-brand-pink`}
-            autoComplete="given-name" aria-invalid={Boolean(errors.firstName)}
-          />
-        ))}
+        {/* First & Last Name */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="firstName" className="block text-sm font-medium text-white mb-2">{t('firstName')}</label>
+            <input
+              id="firstName" name="firstName" value={values.firstName} onChange={onChange}
+              className={inputClass(!!errors.firstName)}
+              autoComplete="given-name"
+            />
+            {errors.firstName && <p className="mt-1 text-xs text-red-300">{errors.firstName}</p>}
+          </div>
+          <div>
+            <label htmlFor="lastName" className="block text-sm font-medium text-white mb-2">{t('lastName')}</label>
+            <input
+              id="lastName" name="lastName" value={values.lastName} onChange={onChange}
+              className={inputClass(!!errors.lastName)}
+              autoComplete="family-name"
+            />
+            {errors.lastName && <p className="mt-1 text-xs text-red-300">{errors.lastName}</p>}
+          </div>
+        </div>
 
-        {field('lastName', 'Last name', (
-          <input
-            id="lastName" name="lastName" value={values.lastName} onChange={onChange}
-            className={`w-full rounded-md bg-white/10 px-3 py-2 outline-none ring-1 ${errors.lastName ? 'ring-red-400' : 'ring-white/20'} focus:ring-2 focus:ring-brand-pink`}
-            autoComplete="family-name" aria-invalid={Boolean(errors.lastName)}
-          />
-        ))}
+        {/* Age & Profession */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="age" className="block text-sm font-medium text-white mb-2">{t('age')}</label>
+            <input
+              id="age" name="age" inputMode="numeric" pattern="[0-9]*" value={values.age} onChange={onChange}
+              className={inputClass(!!errors.age)}
+            />
+            <p className="mt-1 text-xs text-white/50">13–120</p>
+            {errors.age && <p className="text-xs text-red-300">{errors.age}</p>}
+          </div>
+          <div>
+            <label htmlFor="profession" className="block text-sm font-medium text-white mb-2">{t('profession')}</label>
+            <input
+              id="profession" name="profession" value={values.profession} onChange={onChange}
+              className={inputClass(!!errors.profession)}
+            />
+            {errors.profession && <p className="mt-1 text-xs text-red-300">{errors.profession}</p>}
+          </div>
+        </div>
 
-        {field('age', 'Age', (
-          <input
-            id="age" name="age" inputMode="numeric" pattern="[0-9]*" value={values.age} onChange={onChange}
-            className={`w-full rounded-md bg-white/10 px-3 py-2 outline-none ring-1 ${errors.age ? 'ring-red-400' : 'ring-white/20'} focus:ring-2 focus:ring-brand-pink`}
-            aria-invalid={Boolean(errors.age)}
-          />
-        ), '13–120')}
+        {/* Email & Instagram */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-white mb-2">{t('email')}</label>
+            <input
+              id="email" name="email" type="email" value={values.email} onChange={onChange}
+              className={inputClass(!!errors.email)}
+              autoComplete="email"
+            />
+            {errors.email && <p className="mt-1 text-xs text-red-300">{errors.email}</p>}
+          </div>
+          <div>
+            <label htmlFor="instagram" className="block text-sm font-medium text-white mb-2">{t('instagram')}</label>
+            <input
+              id="instagram" name="instagram" value={values.instagram} onChange={onChange}
+              className={inputClass(false)}
+            />
+          </div>
+        </div>
 
-        {field('profession', 'Profession', (
-          <input
-            id="profession" name="profession" value={values.profession} onChange={onChange}
-            className={`w-full rounded-md bg-white/10 px-3 py-2 outline-none ring-1 ${errors.profession ? 'ring-red-400' : 'ring-white/20'} focus:ring-2 focus:ring-brand-pink`}
-            aria-invalid={Boolean(errors.profession)}
-          />
-        ))}
-
-        {field('email', 'Email', (
-          <input
-            id="email" name="email" type="email" value={values.email} onChange={onChange}
-            className={`w-full rounded-md bg-white/10 px-3 py-2 outline-none ring-1 ${errors.email ? 'ring-red-400' : 'ring-white/20'} focus:ring-2 focus:ring-brand-pink`}
-            autoComplete="email" aria-invalid={Boolean(errors.email)}
-          />
-        ))}
-
-        {field('instagram', 'Instagram (optional)', (
-          <input
-            id="instagram" name="instagram" value={values.instagram} onChange={onChange}
-            className="w-full rounded-md bg-white/10 px-3 py-2 outline-none ring-1 ring-white/20 focus:ring-2 focus:ring-brand-pink"
-          />
-        ))}
-
-        {field('referral', 'How did you hear about us?', (
-          <select id="referral" name="referral" value={values.referral} onChange={onChange}
-                  className="w-full rounded-md bg-white/10 px-3 py-2 outline-none ring-1 ring-white/20 focus:ring-2 focus:ring-brand-pink">
-            <option>Instagram</option>
-            <option>Facebook</option>
-            <option>Others</option>
+        {/* Referral */}
+        <div>
+          <label htmlFor="referral" className="block text-sm font-medium text-white mb-2">{t('referral')}</label>
+          <select
+            id="referral" name="referral" value={values.referral} onChange={onChange}
+            className={`${inputClass(false)} appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22white%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:1.25rem]`}
+          >
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Others">Others</option>
           </select>
-        ))}
+        </div>
 
-        {values.referral === 'Others' && field('referralOther', 'Please specify', (
+        {values.referral === 'Others' && (
+          <div>
+            <label htmlFor="referralOther" className="block text-sm font-medium text-white mb-2">{t('referralOther')}</label>
+            <input
+              id="referralOther" name="referralOther" value={values.referralOther} onChange={onChange}
+              className={inputClass(!!errors.referralOther)}
+            />
+            {errors.referralOther && <p className="mt-1 text-xs text-red-300">{errors.referralOther}</p>}
+          </div>
+        )}
+
+        {/* Consent */}
+        <div className="flex items-start gap-3 pt-2">
           <input
-            id="referralOther" name="referralOther" value={values.referralOther} onChange={onChange}
-            className={`w-full rounded-md bg-white/10 px-3 py-2 outline-none ring-1 ${errors.referralOther ? 'ring-red-400' : 'ring-white/20'} focus:ring-2 focus:ring-brand-pink`}
-            aria-invalid={Boolean(errors.referralOther)}
+            id="consent" name="consent" type="checkbox" checked={values.consent} onChange={onChange}
+            className="mt-1 h-4 w-4 rounded border-white/30 bg-white/10 text-brand-pink focus:ring-brand-pink"
           />
-        ))}
-
-        <div className="md:col-span-2 flex items-start gap-2">
-          <input id="consent" name="consent" type="checkbox" checked={values.consent} onChange={onChange}
-                 className="mt-1 h-4 w-4 rounded border-white/30 bg-white/10" aria-invalid={Boolean(errors.consent)} />
-          <label htmlFor="consent" className="text-sm text-white/90">
+          <label htmlFor="consent" className="text-sm text-white/80 leading-relaxed">
             I agree to receive occasional emails related to Book Digest events and confirm I am 13 years or older.
           </label>
         </div>
-        {errors.consent ? <p className="md:col-span-2 text-xs text-red-300" aria-live="polite">{errors.consent}</p> : null}
+        {errors.consent && <p className="text-xs text-red-300">{errors.consent}</p>}
 
-        <div className="md:col-span-2 mt-2">
-          <button type="submit" disabled={submitting}
-                  className="inline-flex items-center rounded-full bg-brand-pink text-brand-navy px-5 py-2.5 font-semibold shadow disabled:opacity-60">
-            {submitting ? 'Submitting…' : 'Submit'}
+        {/* Submit */}
+        <div className="pt-4">
+          <button
+            type="submit"
+            disabled={submitting}
+            className="inline-flex items-center rounded-full bg-brand-pink text-brand-navy px-6 py-2.5 font-semibold shadow hover:brightness-110 transition-all disabled:opacity-60"
+          >
+            {submitting ? t('submitting') : t('submit')}
           </button>
         </div>
       </form>

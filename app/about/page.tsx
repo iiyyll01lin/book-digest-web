@@ -1,17 +1,104 @@
+'use client';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
+
 export default function AboutPage() {
+  const t = useTranslations('about');
+
   return (
-    <section className="bg-brand-navy text-white">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="text-2xl md:text-3xl font-bold tracking-wide font-outfit">Our Story</h1>
-        <p className="mt-4 max-w-prose text-white/90 leading-relaxed">
-          Book Digest is a community to rest, read, and reconnect. Each month we pick a book across genres—from fiction to psychology, world history to personal finance—and meet to discuss.
-        </p>
-        <h2 className="mt-10 text-2xl md:text-3xl font-bold tracking-wide font-outfit">Why Us</h2>
-        <ul className="mt-4 list-disc pl-6 space-y-2 text-white/90">
-          <li>A new book every month—discover outside your comfort zone.</li>
-          <li>Friendly, moderated discussions; welcoming to new readers.</li>
-          <li>Surprises often become the best part of the journey.</li>
-        </ul>
+    <section className="bg-brand-navy text-white min-h-screen">
+      <div className="mx-auto max-w-4xl px-6 py-16">
+        {/* Our Story Section */}
+        <h1 className="text-3xl md:text-4xl font-bold tracking-wide font-outfit mb-8">
+          {t('ourStory')}
+        </h1>
+
+        {/* Story Paragraphs */}
+        <div className="space-y-6 text-white/90 leading-relaxed">
+          <p className="whitespace-pre-line">
+            {t('storyPara1')}
+          </p>
+          <p className="whitespace-pre-line">
+            {t('storyPara2')}
+          </p>
+          <p className="whitespace-pre-line">
+            {t('storyPara3')}
+          </p>
+        </div>
+
+        {/* Why Us Section */}
+        <div className="mt-20">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-wide font-outfit text-center mb-12">
+            {t('whyUs')}
+          </h2>
+
+          {/* Reason 1 - A New Book Every Month */}
+          <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start mb-16">
+            <div className="flex-shrink-0">
+              <img 
+                src="/images/elements/whyus-06.png" 
+                alt="" 
+                className="w-32 md:w-40 h-auto"
+              />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold font-outfit text-brand-pink mb-3">
+                {t('reason1Title')}
+              </h3>
+              <p className="text-white/80 leading-relaxed whitespace-pre-line">
+                {t('reason1Desc')}
+              </p>
+            </div>
+          </div>
+
+          {/* Reason 2 - Deep, delightful and diverse conversations */}
+          <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start mb-16">
+            <div className="flex-shrink-0">
+              <img 
+                src="/images/elements/whyus-07.png" 
+                alt="" 
+                className="w-32 md:w-40 h-auto"
+              />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold font-outfit italic text-brand-pink mb-3">
+                {t('reason2Title')}
+              </h3>
+              <p className="text-white/80 leading-relaxed whitespace-pre-line">
+                {t('reason2Desc')}
+              </p>
+            </div>
+          </div>
+
+          {/* Reason 3 - Chill Vibes, No Pressure */}
+          <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start mb-16">
+            <div className="flex-shrink-0">
+              <img 
+                src="/images/elements/why us-08.png" 
+                alt="" 
+                className="w-32 md:w-40 h-auto"
+              />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold font-outfit italic text-brand-pink mb-3">
+                {t('reason3Title')}
+              </h3>
+              <p className="text-white/80 leading-relaxed whitespace-pre-line">
+                {t('reason3Desc')}
+              </p>
+            </div>
+          </div>
+
+          {/* Join Us Button */}
+          <div className="text-center mt-12">
+            <Link
+              href="/joinus"
+              className="inline-flex items-center px-8 py-3 rounded-full bg-brand-pink text-brand-navy font-bold text-lg hover:brightness-110 transition-all uppercase tracking-wider"
+            >
+              {t('joinUsBtn')}
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );

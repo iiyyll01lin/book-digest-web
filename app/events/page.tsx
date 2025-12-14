@@ -1,8 +1,8 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import stats from '../../data/stats.json';
 import { useEffect, useRef, useState, Suspense } from 'react';
-import SignupForm from '@/components/SignupForm';
 
 function useOnceInView<T extends HTMLElement>() {
   const ref = useRef<T | null>(null);
@@ -57,154 +57,151 @@ function Counter({ target, label }: { target: number; label: string }) {
       <div className="text-sm text-white/70 font-outfit uppercase tracking-wider">
         {label}
       </div>
-      <div className="text-4xl md:text-5xl font-bold tabular-nums font-outfit mt-1">
+      <div className="text-5xl md:text-6xl font-bold tabular-nums font-outfit mt-1">
         {value.toLocaleString()}
       </div>
     </div>
   );
 }
 
-// Event types definition
-const EVENTS = [
-  {
-    id: 'TW',
-    name: '台灣讀書會',
-    nameEn: 'Taiwan Book Club',
-    description: '每月一次的實體讀書會，一起享受閱讀的樂趣',
-    image: '/images/elements/event-tw.png',
-    location: 'TW' as const,
-  },
-  {
-    id: 'NL',
-    name: '荷蘭讀書會',
-    nameEn: 'Netherlands Book Club',
-    description: 'Monthly online book club for readers in Europe',
-    image: '/images/elements/event-nl.png',
-    location: 'NL' as const,
-  },
-];
-
-function EventsContent() {
-  const searchParams = useSearchParams();
-  const eventParam = searchParams.get('event');
-
-  // Filter events based on URL parameter
-  const filteredEvents = eventParam
-    ? EVENTS.filter((e) => e.id.toLowerCase() === eventParam.toLowerCase())
-    : EVENTS;
-
-  // Set active location based on filtered event or default
-  const [activeLoc, setActiveLoc] = useState<'TW' | 'NL'>(
-    filteredEvents.length === 1 ? filteredEvents[0].location : 'TW'
+// Event Section Component - Image only, no text overlay
+function EventSection({
+  image,
+  title,
+  description,
+  signupUrl,
+  imagePosition = 'left',
+}: {
+  image: string;
+  title: string;
+  description: string;
+  signupUrl?: string;
+  imagePosition?: 'left' | 'right';
+}) {
+  const imageBlock = (
+    <div className="w-full lg:w-1/2">
+      <div className="rounded-2xl overflow-hidden shadow-xl">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-auto"
+        />
+      </div>
+    </div>
   );
 
-  const endpointTW =
-    process.env.NEXT_PUBLIC_FORMS_ENDPOINT_TW || '/api/submit?loc=TW';
-  const endpointNL =
-    process.env.NEXT_PUBLIC_FORMS_ENDPOINT_NL || '/api/submit?loc=NL';
-
-  // Get current event for display
-  const currentEvent = EVENTS.find((e) => e.location === activeLoc);
+  const contentBlock = (
+    <div className="w-full lg:w-1/2 flex flex-col justify-center">
+      <h3 className="text-2xl md:text-3xl font-bold text-white font-outfit">
+        {title}
+      </h3>
+      <p className="mt-6 text-white/80 leading-relaxed whitespace-pre-line text-lg">
+        {description}
+      </p>
+      {signupUrl && (
+        <div className="mt-8">
+          <Link
+            href={signupUrl}
+            className="inline-flex items-center px-8 py-3 rounded-full bg-brand-pink text-brand-navy font-semibold hover:brightness-110 transition-all uppercase tracking-wider text-sm"
+          >
+            Sign Up
+          </Link>
+        </div>
+      )}
+    </div>
+  );
 
   return (
-    <section className="bg-brand-navy text-white">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="text-3xl md:text-4xl font-bold font-outfit">Events</h1>
+    <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+      {imagePosition === 'left' ? (
+        <>
+          {imageBlock}
+          {contentBlock}
+        </>
+      ) : (
+        <>
+          {contentBlock}
+          {imageBlock}
+        </>
+      )}
+    </div>
+  );
+}
 
+function EventsContent() {
+  const t = useTranslations('events');
+
+  return (
+    <section className="bg-brand-navy text-white min-h-screen">
+      <div className="mx-auto max-w-6xl px-6 py-16">
         {/* Stats Counters */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-8">
-          <Counter target={stats.readingDays} label="Reading Days" />
-          <Counter target={stats.clubsHeld} label="Book Clubs Held" />
-          <Counter target={stats.readersJoined} label="Readers Joined" />
+        <div className="grid grid-cols-3 gap-4 md:gap-8 mb-16">
+          <Counter target={stats.readingDays} label={t('readingDays')} />
+          <Counter target={stats.clubsHeld} label={t('clubsHeld')} />
+          <Counter target={stats.readersJoined} label={t('readersJoined')} />
         </div>
 
-        {/* Event Selection and Sign Up */}
-        <div id="signup" className="mt-12">
-          <h2 className="text-2xl md:text-3xl font-bold font-outfit">
-            Join the Book Club
-          </h2>
-          <p className="text-white/80 mt-2">
-            {filteredEvents.length === 1
-              ? `歡迎報名 ${currentEvent?.name}`
-              : 'Choose your location and sign up. Only one submission is needed.'}
-          </p>
+        {/* Taiwan Book Club */}
+        <div className="py-12">
+          <EventSection
+            image="/images/elements/AD-16.png"
+            title="Upcoming Book Club in Taipei, Taiwan"
+            description={`From bang to thud, this book traces how language grew from sensory experience into a uniquely human skill. With Pokémon, Japanese sounds, and child development as examples, it explores how meaning is built.
 
-          {/* Only show tabs if not filtered to single event */}
-          {filteredEvents.length > 1 && (
-            <div
-              className="mt-4 inline-flex rounded-full border border-white/20 p-1 bg-white/5"
-              role="tablist"
-              aria-label="Location selector"
-            >
-              {EVENTS.map((event) => (
-                <button
-                  key={event.id}
-                  role="tab"
-                  aria-selected={activeLoc === event.location}
-                  onClick={() => setActiveLoc(event.location)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium font-outfit uppercase tracking-wider transition-colors ${
-                    activeLoc === event.location
-                      ? 'bg-brand-pink text-brand-navy'
-                      : 'text-white hover:bg-white/10'
-                  }`}
-                >
-                  {event.location === 'TW' ? 'Taiwan' : 'Netherlands'}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Event Card with Image and Form - Aligned */}
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            {/* Event Image */}
-            <div className="rounded-2xl overflow-hidden bg-white/5 border border-white/10">
-              <img
-                src={currentEvent?.image || '/images/placeholder-cover.svg'}
-                alt={currentEvent?.name || 'Event'}
-                className="w-full h-64 lg:h-80 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold font-outfit">
-                  {currentEvent?.name}
-                </h3>
-                <p className="text-white/70 mt-2">{currentEvent?.description}</p>
-              </div>
-            </div>
-
-            {/* Sign Up Form */}
-            <div className="bg-white/5 rounded-2xl border border-white/10 p-6">
-              <h3 className="text-lg font-semibold font-outfit mb-4">
-                報名表單 / Registration Form
-              </h3>
-              {activeLoc === 'TW' ? (
-                <SignupForm location="TW" endpoint={endpointTW} />
-              ) : (
-                <SignupForm location="NL" endpoint={endpointNL} />
-              )}
-            </div>
-          </div>
+Perfect for fans of linguistics, kids' minds, or human vs. AI thinking.
+Read with us this August!`}
+            signupUrl="/joinus?location=TW"
+            imagePosition="left"
+          />
         </div>
 
-        {/* Digital Detox Section */}
-        <div id="detox" className="mt-16">
-          <h2 className="text-2xl md:text-3xl font-bold font-outfit">
-            Digital Detox
-          </h2>
-          <p className="text-white/80 mt-2 max-w-prose">
-            A gentle reset from constant notifications. Put your phone away for
-            a while and join us in slow, mindful reading.
-          </p>
-          <div className="mt-4 rounded-xl bg-white/5 border border-white/10 p-5">
-            <ol className="list-decimal pl-6 space-y-2">
-              <li>Pick a time window to unplug (start with 25 minutes).</li>
-              <li>Place your phone out of reach; set it to Do Not Disturb.</li>
-              <li>Read a book or reflect in a notebook. That&apos;s it.</li>
-            </ol>
-            <p className="text-white/70 text-sm mt-4">
-              Tip: Start small, be consistent. We&apos;ll check in weekly at the book
-              club.
-            </p>
-          </div>
+        {/* Decorative Line */}
+        <div className="relative h-px my-4">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-pink/50 to-transparent" />
+        </div>
+
+        {/* Netherlands Book Club */}
+        <div className="py-12">
+          <EventSection
+            image="/images/elements/AD-15.png"
+            title="Upcoming Book Club in Netherlands"
+            description={`When you think of the Netherlands, what comes to mind? Windmills, bikes, tulips?
+
+This book bursts the romanticised bubble and offers a sharp, accessible look into Dutch society — from social clique and gender diversity to workplace culture and sustainability.
+
+Not perfect — but honest.`}
+            signupUrl="/joinus?location=NL"
+            imagePosition="right"
+          />
+        </div>
+
+        {/* Decorative Line */}
+        <div className="relative h-px my-4">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-pink/50 to-transparent" />
+        </div>
+
+        {/* Digital Detox */}
+        <div id="detox" className="py-12">
+          <EventSection
+            image="/images/elements/AD-17.png"
+            title="Upcoming Digital Detox"
+            description={`For a few hours, we all unplugged.
+We ate together, read together, laughed together, and most importantly, we are present.
+
+Come unplug with us, your cozy little digital detox awaits!`}
+            signupUrl="/joinus"
+            imagePosition="left"
+          />
+        </div>
+
+        {/* Join Us CTA */}
+        <div className="text-center pt-12 mt-8 border-t border-white/10">
+          <Link
+            href="/joinus"
+            className="inline-flex items-center px-10 py-4 rounded-full bg-brand-pink text-brand-navy font-bold text-lg hover:brightness-110 transition-all uppercase tracking-wider"
+          >
+            {t('registrationForm')}
+          </Link>
         </div>
       </div>
     </section>

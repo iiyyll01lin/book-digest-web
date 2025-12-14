@@ -1,4 +1,5 @@
 'use client';
+import { useTranslations } from 'next-intl';
 
 type SidebarProps = {
   articles?: { slug: string; title: string }[];
@@ -8,16 +9,17 @@ type SidebarProps = {
 
 export default function BookArticleSidebar({
   articles = [],
-  podcastUrl = 'https://podcasts.apple.com',
-  instagramUrl = 'https://instagram.com',
+  podcastUrl = 'https://podcasts.apple.com/podcast/1801844059',
+  instagramUrl = 'https://www.instagram.com/bookdigest_tw/',
 }: SidebarProps) {
+  const t = useTranslations('sidebar');
   return (
     <aside className="space-y-8" aria-label="Sidebar">
       {/* Podcast Section */}
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
-        <h3 className="text-lg font-bold text-gray-900">🎙️ Podcast</h3>
+        <h3 className="text-lg font-bold text-gray-900">🎙️ {t('podcast')}</h3>
         <p className="mt-2 text-sm text-gray-600">
-          聽我們聊聊這本書的心得與延伸討論
+          {t('podcastDesc')}
         </p>
         <a
           href={podcastUrl}
@@ -28,14 +30,14 @@ export default function BookArticleSidebar({
           <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
           </svg>
-          收聽 Podcast
+          {t('listenPodcast')}
         </a>
       </div>
 
       {/* Related Articles */}
       {articles.length > 0 && (
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
-          <h3 className="text-lg font-bold text-gray-900">📚 更多書評</h3>
+          <h3 className="text-lg font-bold text-gray-900">📚 {t('moreBooks')}</h3>
           <ul className="mt-3 space-y-2">
             {articles.slice(0, 5).map((article) => (
               <li key={article.slug}>
@@ -52,14 +54,14 @@ export default function BookArticleSidebar({
             href="/books"
             className="mt-4 inline-block text-sm font-medium text-brand-pink hover:underline"
           >
-            查看全部 →
+            {t('viewAll')}
           </a>
         </div>
       )}
 
       {/* Social Links */}
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
-        <h3 className="text-lg font-bold text-gray-900">🔗 追蹤我們</h3>
+        <h3 className="text-lg font-bold text-gray-900">🔗 {t('followUs')}</h3>
         <div className="mt-3 flex gap-3">
           <a
             href={instagramUrl}

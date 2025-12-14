@@ -8,7 +8,7 @@
     "home": "Home",
     "books": "Books",
     "events": "Events",
-    "about": "About",
+    "about": "About Us",
     "joinUs": "Join Us",
     "join": "Join"
   },
@@ -59,6 +59,11 @@
       "tip": "Tip: Start small, be consistent. We'll check in weekly at the book club."
     }
   },
+  "joinus": {
+    "title": "Join Us",
+    "subtitle": "Choose your location and sign up to join our book club community. Only one submission is needed.",
+    "bookClub": "Book Club"
+  },
   "books": {
     "title": "Books",
     "summary": "Book Summary",
@@ -80,11 +85,17 @@
   },
   "about": {
     "ourStory": "Our Story",
-    "storyContent": "Book Digest is a community to rest, read, and reconnect. Each month we pick a book across genres—from fiction to psychology, world history to personal finance—and meet to discuss.",
-    "whyUs": "Why Us",
-    "reason1": "A new book every month—discover outside your comfort zone.",
-    "reason2": "Friendly, moderated discussions; welcoming to new readers.",
-    "reason3": "Surprises often become the best part of the journey."
+    "storyPara1": "It all started in a cozy little cafe in Taipei's East District,\na group of young people returning from abroad, looking to re-root themselves in the city,\nbrought together by a shared love for books and movies.\nAfter coming back to Taiwan, our founder reunited with old colleagues from China,\nand casual catch-ups turned into something more.",
+    "storyPara2": "Strangers became reading buddies,\nand over time we figured out how we liked to read and talk together,\nnot just about books, but about life, ideas, and everything in between.\nAnd that's how BookDigest was born.\n\nEach month, we will pick the book.\nWe read everything from novels and psychology to world history and personal finance.\nSometimes it's something we'd totally pick for ourselves,\nother times, it's way outside our comfort zone (in the best way).\nThere's something magical about seeing the world through someone else's bookshelf.",
+    "storyPara3": "We believe reading isn't just about taking in information,\nit's about chewing on ideas, reflecting, discussing, and slowly letting it all sink in.\nKnowledge only truly becomes yours when you've taken the time to digest it.\nWe meet at a different cafe each month,\nso if you love a good book, meaningful conversations,\nand a really great cup of coffee,\ncome hang out with us at BookDigest!",
+    "whyUs": "Why Us?",
+    "reason1Title": "A New Book Every Month",
+    "reason1Desc": "Each month, we will pick the book, and trust us, it's never the same.\nFrom fiction to psychology, world history to personal finance, you'll find yourself reading stuff you'd never pick on your own.\nIt's like a mini adventure outside your comfort zone, and honestly, those surprises are often the best part!",
+    "reason2Title": "Deep, delightful and diverse conversations",
+    "reason2Desc": "We come from all sorts of backgrounds — engineers, designers, teachers, finance folks, you name it.\nAnd when we read something topic-specific, we sometimes invite someone with real-life experience to join the conversation.\nThat's what makes our book club both deep and fun at the same time!",
+    "reason3Title": "Chill Vibes, No Pressure",
+    "reason3Desc": "Think of it more like catching up with friends than a formal discussion.\nNo need to prep a presentation, just bring the book you read (and your lovely self)!\nEveryone shares their favorite chapters or adds something extra the book didn't cover.\nCome hang out and chat with us!",
+    "joinUsBtn": "Join Us"
   },
   "footer": {
     "events": "Events",
@@ -134,5 +145,15 @@
     "moreBooks": "More Books",
     "viewAll": "View all →",
     "followUs": "Follow Us"
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "intro": "Welcome to Book Digest. These terms and conditions govern your use of our website and our services. By accessing or using our website, you agree to comply with and be bound by these terms. If you do not agree to these terms, please do not use our website or services.",
+    "contact": "For any questions about these Terms, please contact us at"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "Book Digest values your privacy and is committed to protecting your personal data. This privacy policy explains how we collect, use, disclose, and safeguard your information when you visit our website and engage with our services.",
+    "contact": "If you have any questions about this privacy policy, please contact us at"
   }
 }
