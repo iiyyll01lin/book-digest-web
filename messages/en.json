@@ -1,0 +1,138 @@
+{
+  "metadata": {
+    "title": "Book Digest - A space to rest, read, and reconnect",
+    "description": "Come join the conversation! Put your phone down, pick a book up. Join our book club and digital detox community.",
+    "keywords": "book club, reading, digital detox, mindfulness, book discussion, reading community"
+  },
+  "nav": {
+    "home": "Home",
+    "books": "Books",
+    "events": "Events",
+    "about": "About",
+    "joinUs": "Join Us",
+    "join": "Join"
+  },
+  "home": {
+    "hero": {
+      "title": "A space to rest, read, and reconnect,",
+      "titleLine2": "one page at a time.",
+      "subtitle": "Come join the conversation!",
+      "ctaBookClub": "Book Club",
+      "ctaDetox": "Digital Detox"
+    },
+    "recentReads": "Recent Reads",
+    "viewAll": "View All",
+    "browseBooks": "Browse Books"
+  },
+  "whyUs": {
+    "title": "Why Us",
+    "monthlyPicks": {
+      "title": "Monthly Picks",
+      "desc": "A new book every month—from fiction to psychology and beyond."
+    },
+    "welcomingCommunity": {
+      "title": "Welcoming Community",
+      "desc": "Friendly, moderated discussions for all reading levels."
+    },
+    "growTogether": {
+      "title": "Grow Together",
+      "desc": "Try topics outside your comfort zone and be surprised."
+    }
+  },
+  "events": {
+    "title": "Events",
+    "joinBookClub": "Join the Book Club",
+    "chooseLocation": "Choose your location and sign up. Only one submission is needed.",
+    "welcomeEvent": "Welcome to {eventName}",
+    "taiwan": "Taiwan",
+    "netherlands": "Netherlands",
+    "registrationForm": "Registration Form",
+    "readingDays": "Reading Days",
+    "clubsHeld": "Book Clubs Held",
+    "readersJoined": "Readers Joined",
+    "digitalDetox": {
+      "title": "Digital Detox",
+      "description": "A gentle reset from constant notifications. Put your phone away for a while and join us in slow, mindful reading.",
+      "step1": "Pick a time window to unplug (start with 25 minutes).",
+      "step2": "Place your phone out of reach; set it to Do Not Disturb.",
+      "step3": "Read a book or reflect in a notebook. That's it.",
+      "tip": "Tip: Start small, be consistent. We'll check in weekly at the book club."
+    }
+  },
+  "books": {
+    "title": "Books",
+    "summary": "Book Summary",
+    "readingNotes": "Reading Notes",
+    "notesComingSoon": "Detailed reading notes coming soon...",
+    "notesNotice": "Want to be notified when updates are available? Join our book club!",
+    "register": "Register Now",
+    "discussionPoints": "Discussion Points",
+    "question1": "What impressed you the most about this book?",
+    "question2": "How would you apply the concepts from this book in your life?",
+    "question3": "Are there any viewpoints you disagree with?",
+    "relatedLinks": "Related Links",
+    "buyBook": "Buy Book",
+    "fullNotes": "Full Notes",
+    "backToBooks": "Back to Books",
+    "bookClubDate": "Book Club Date:",
+    "moreBooks": "More Books",
+    "followUs": "Follow Us"
+  },
+  "about": {
+    "ourStory": "Our Story",
+    "storyContent": "Book Digest is a community to rest, read, and reconnect. Each month we pick a book across genres—from fiction to psychology, world history to personal finance—and meet to discuss.",
+    "whyUs": "Why Us",
+    "reason1": "A new book every month—discover outside your comfort zone.",
+    "reason2": "Friendly, moderated discussions; welcoming to new readers.",
+    "reason3": "Surprises often become the best part of the journey."
+  },
+  "footer": {
+    "events": "Events",
+    "bookClub": "Book Club",
+    "unplugProject": "Unplug Project",
+    "getInvolved": "Get Involved",
+    "beAHost": "Be a Host",
+    "signUpForms": "Sign Up Forms",
+    "aboutUs": "About Us",
+    "ourStory": "Our Story",
+    "instagram": "Instagram",
+    "podcast": "Podcast",
+    "helpSupport": "Help and Support",
+    "contactUs": "Contact us",
+    "terms": "Terms and conditions",
+    "privacy": "Privacy policy",
+    "copyright": "© 2025 BOOK DIGEST"
+  },
+  "form": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "age": "Age",
+    "profession": "Profession",
+    "email": "Email",
+    "instagram": "Instagram (optional)",
+    "referral": "How did you find us?",
+    "referralOther": "Please specify",
+    "consent": "I agree to the terms and conditions",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "success": "Thank you for signing up!",
+    "error": "Something went wrong. Please try again."
+  },
+  "modal": {
+    "detoxTitle": "Digital Detox",
+    "detoxIntro": "Put your phone down, pick a book up. Join our community experiment to unplug and reclaim your attention.",
+    "detoxFeature1": "Simple daily prompts to reduce screen time",
+    "detoxFeature2": "Weekly check-ins with the club",
+    "detoxFeature3": "Optional: share reflections on what you noticed",
+    "imIn": "I'm in",
+    "maybeLater": "Maybe later"
+  },
+  "sidebar": {
+    "podcast": "Podcast",
+    "podcastDesc": "Listen to our discussion and extended thoughts on this book",
+    "listenPodcast": "Listen to Podcast",
+    "moreBooks": "More Books",
+    "viewAll": "View all →",
+    "followUs": "Follow Us"
+  }
+}

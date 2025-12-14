@@ -12,21 +12,21 @@ export default function WhyUs() {
     },
     {
       title: 'Grow Together',
-  desc: 'Try topics outside your comfort zone and be surprised.',
-  icon: '/images/elements/why us-08.png',
+      desc: 'Try topics outside your comfort zone and be surprised.',
+      icon: '/images/elements/why us-08.png',
     },
   ];
   return (
     <section aria-labelledby="why-us-heading" className="bg-brand-navy">
       <div className="mx-auto max-w-6xl px-6 py-14">
-        <h2 id="why-us-heading" className="text-2xl md:text-3xl font-bold tracking-wide">Why Us</h2>
+        <h2 id="why-us-heading" className="text-2xl md:text-3xl font-bold tracking-wide font-outfit">Why Us</h2>
         <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
           {items.map((it) => (
             <div key={it.title} className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-start gap-4">
                 <img src={it.icon} alt="" className="h-10 w-10 object-contain" />
                 <div>
-                  <div className="font-semibold text-white">{it.title}</div>
+                  <div className="font-semibold text-white font-outfit">{it.title}</div>
                   <p className="text-white/80 text-sm mt-1">{it.desc}</p>
                 </div>
               </div>

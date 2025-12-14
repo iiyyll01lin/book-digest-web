@@ -4,6 +4,8 @@ import Modal from '@/components/Modal';
 import BookWall from '@/components/BookWall';
 import WhyUs from '@/components/WhyUs';
 import NotebookStrip from '@/components/NotebookStrip';
+import PageFlipAnimation from '@/components/PageFlipAnimation';
+import SectionDivider from '@/components/SectionDivider';
 
 export default function HomePage() {
   const [open, setOpen] = useState(false);
@@ -29,23 +31,41 @@ export default function HomePage() {
                 Come join the conversation!
               </p>
               <div className="mt-8 flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-3">
-                <a href="/events" className="inline-flex min-h-11 items-center rounded-full bg-brand-pink px-6 py-3 font-semibold text-brand-navy shadow hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-pink focus-visible:ring-offset-brand-navy">Book Club</a>
-                <button onClick={() => setOpen(true)} className="inline-flex min-h-11 items-center rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy">Digital Detox</button>
+                <a href="/events" className="inline-flex min-h-11 items-center rounded-full bg-brand-pink px-6 py-3 font-semibold text-brand-navy shadow hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-pink focus-visible:ring-offset-brand-navy uppercase tracking-wider font-outfit">Book Club</a>
+                <button onClick={() => setOpen(true)} className="inline-flex min-h-11 items-center rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy uppercase tracking-wider font-outfit">Digital Detox</button>
               </div>
             </div>
-            {/* Keep scrapbook image as right-side visual */}
+            {/* Page Flip Animation replacing static image */}
             <div className="mt-10 md:mt-0">
-              <img src="/images/notebook/notebook-03.png" alt="Book club scrapbook visual" className="mx-auto md:ml-auto md:mr-0 w-full h-auto max-w-3xl md:max-w-lg rounded-lg shadow-xl"/>
+              <PageFlipAnimation
+                images={[
+                  '/images/notebook/notebook-01.png',
+                  '/images/notebook/notebook-02.png',
+                  '/images/notebook/notebook-03.png',
+                ]}
+                autoPlay={true}
+                interval={4000}
+                className="w-full max-w-3xl md:max-w-lg mx-auto md:ml-auto md:mr-0"
+              />
             </div>
           </div>
         </div>
       </section>
 
-  {/* Book covers wall to match the design */}
+  {/* Section Divider */}
+  <SectionDivider color="white" className="mx-auto max-w-6xl px-6" />
+
+  {/* Book Wall - showing all book covers */}
   <BookWall />
+
+  {/* Section Divider */}
+  <SectionDivider color="white" className="mx-auto max-w-6xl px-6" />
 
   {/* Why Us section */}
   <WhyUs />
+
+  {/* Section Divider */}
+  <SectionDivider color="white" className="mx-auto max-w-6xl px-6" />
 
   {/* Notebook visual strip */}
   <NotebookStrip />

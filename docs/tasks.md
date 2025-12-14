@@ -38,13 +38,13 @@ T-003 Base theming & assets [Done | S]
 
 ## Epic E1 — i18n
 
-T-010 next-intl setup [Todo | S]
+T-010 next-intl setup [Done | S]
 - Description: Configure `next-intl` with `messages/en.json` & `messages/zh.json`.
 - Outcome: Strings render per locale.
 - Dependencies: T-001.
 
-T-011 Language toggle with persistence [Todo | S]
-- Description: Header toggle; remember selection via localStorage; preserve route and modal state.
+T-011 Language toggle with persistence [Done | S]
+- Description: Header toggle; remember selection via cookie; preserve route and modal state.
 - Outcome: Switching language keeps current page and open modal.
 - EARS: L01.
 - Dependencies: T-010, T-020, T-050.
@@ -164,9 +164,9 @@ T-080 About page [Done | S]
 
 ## Epic E9 — SEO & Analytics
 
-T-090 Route metadata & OG tags [Todo | XS]
-- Description: Titles/descriptions per route; Open Graph images.
-- Outcome: Good link previews; crawlable.
+T-090 Route metadata & OG tags [Done | XS]
+- Description: Titles/descriptions per route; Open Graph images; sitemap; robots.txt; web manifest.
+- Outcome: Good link previews; crawlable; SEO optimized.
 - EARS: Non-Functional SEO.
 - Dependencies: T-001.
 
@@ -345,3 +345,107 @@ P2-204 Sentry integration [Todo | XS]
 		- Lint/typecheck run: no errors (only Next `<img>` warnings remain; to be addressed by T-110/T-140). [Pass]
 	- Outcome
 		- T-071 marked Done.
+
+---
+
+## 2025-12-13 Implementation Log (URS Gap Analysis & Implementation)
+
+Based on User Requirements Specification (URS) gap analysis, the following features have been implemented:
+
+### New Components Created
+
+T-200 Book Article Page Redesign [Done | M]
+- Description: Redesigned `/books/[slug]` page to match Reading Outpost style with white background, sidebar, and article layout.
+- Outcome: Full article page with book hero, summary, discussion points, external links, and sidebar (Podcast/Article list/Social links).
+- EARS: B02, A01.
+- Files: `app/books/[slug]/page.tsx`, `components/BookArticleSidebar.tsx`
+
+T-201 Page Flip Animation [Done | M]
+- Description: Implemented page flip animation component for hero section with autoplay and navigation dots.
+- Outcome: Animated notebook visual with 3D flip effect; respects reduced-motion preference.
+- EARS: H01.
+- Files: `components/PageFlipAnimation.tsx`
+
+T-202 Book Carousel [Done | M]
+- Description: Replaced BookWall with carousel showing 5 books at a time, smaller size, centered-right position, reverse chronological order.
+- Outcome: Carousel with navigation arrows, pagination dots, autoplay; sorted by readDate descending.
+- EARS: B01.
+- Files: `components/BookCarousel.tsx`
+
+T-203 Section Dividers [Done | XS]
+- Description: Added white line separators between homepage sections.
+- Outcome: Visual separation between activity blocks.
+- EARS: H01.
+- Files: `components/SectionDivider.tsx`, `app/page.tsx`
+
+T-204 Event Single Filter [Done | S]
+- Description: Events page now supports URL parameter `?event=TW` or `?event=NL` to show only specific event.
+- Outcome: Deep-linkable single event signup; hides unrelated events; aligned image with form.
+- EARS: E01, F01.
+- Files: `app/events/page.tsx`
+
+T-205 Typography Consistency [Done | S]
+- Description: Updated fonts across site - CTA buttons use Outfit (uppercase, increased letter-spacing); Our Story/Why Us headers match; Counter uses stable Outfit font.
+- Outcome: Consistent typography matching design specs.
+- EARS: Multiple.
+- Files: `tailwind.config.ts`, `app/layout.tsx`, `app/about/page.tsx`, `components/WhyUs.tsx`, `components/Footer.tsx`, `app/events/page.tsx`
+
+T-206 Footer Optimization [Done | XS]
+- Description: Reduced logo size, thinner pink bar, smaller text in footer.
+- Outcome: More compact, less obtrusive footer.
+- EARS: N01.
+- Files: `components/Footer.tsx`
+
+### Updated Homepage
+- Replaced static notebook image with PageFlipAnimation component
+- Replaced BookWall with BookCarousel (5 books, smaller, centered-right)
+- Added SectionDividers between sections
+- CTA buttons now use Outfit font with uppercase and letter-spacing
+
+### Event Page Improvements
+- Added URL-based event filtering (?event=TW or ?event=NL)
+- Image and form now aligned in 2-column grid
+- Counter labels and values use Outfit font with stable sizing
+
+### Typography Updates
+- Added Outfit font via Google Fonts in layout.tsx
+- Updated tailwind.config.ts with font-outfit family
+- Applied consistent font-outfit to all headings and CTAs
+
+### Remaining URS Items (Not Implemented - Phase 2)
+- Google OAuth login & Admin panel (requires backend infrastructure)
+- Payment flow pages (Thank You, Order Details)
+- Bank transfer instructions (bilingual)
+
+---
+
+## 2025-12-13 Implementation Log (SEO & i18n Implementation)
+
+T-207 SEO Optimization [Done | S]
+- Description: Implemented comprehensive SEO metadata, Open Graph tags, sitemap, robots.txt, and web manifest.
+- Outcome: All pages have proper meta tags; good social sharing previews; search engine friendly.
+- EARS: Non-Functional SEO.
+- Files: `lib/seo.ts`, `app/sitemap.ts`, `public/robots.txt`, `public/site.webmanifest`, `app/layout.tsx`
+- Details:
+  - Centralized SEO configuration in `lib/seo.ts` with default metadata and per-page overrides
+  - Dynamic sitemap generation for static pages and book pages
+  - Web manifest for PWA support
+  - robots.txt for crawler guidance
+  - Open Graph and Twitter Card meta tags
+
+T-208 i18n Bilingual Support [Done | M]
+- Description: Implemented full internationalization with next-intl for English and Traditional Chinese.
+- Outcome: All UI text is translatable; language toggle persists choice via cookie; no page refresh required.
+- EARS: L01.
+- Files: `messages/en.json`, `messages/zh.json`, `lib/i18n.ts`, `lib/useLocale.ts`, `components/LangToggle.tsx`, `components/Header.tsx`, `next.config.mjs`
+- Details:
+  - Translation files with full coverage of nav, home, whyUs, events, books, about, footer, form, modal, sidebar
+  - Server-side locale detection from cookie then Accept-Language header
+  - Client-side language toggle component integrated into Header
+  - next-intl plugin configured in next.config.mjs
+  - Locale persisted to cookie for server-side access
+
+### Updated Tasks Status
+- T-010 next-intl setup: Done (previously Todo)
+- T-011 Language toggle with persistence: Done (previously Todo)
+- T-090 Route metadata & OG tags: Done (previously Todo)

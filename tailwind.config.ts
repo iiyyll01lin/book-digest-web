@@ -22,9 +22,19 @@ const config: Config = {
         22: '5.5rem',
       },
       fontFamily: {
-        // replace with real fonts later
-        display: ['system-ui', 'sans-serif'],
+        // Outfit for CTAs and headings (uppercase, increased letter spacing)
+        outfit: ['Outfit', 'system-ui', 'sans-serif'],
+        // Display font for hero sections
+        display: ['Outfit', 'system-ui', 'sans-serif'],
+        // Body text
         body: ['system-ui', 'sans-serif'],
+      },
+      letterSpacing: {
+        wider: '0.1em',
+        widest: '0.15em',
+      },
+      transitionDuration: {
+        '600': '600ms',
       },
     },
   },

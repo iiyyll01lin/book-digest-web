@@ -1,0 +1,138 @@
+{
+  "metadata": {
+    "title": "Book Digest - 休息、閱讀、重新連結的空間",
+    "description": "來加入對話吧！放下手機，拿起書本。加入我們的讀書會和數位排毒社群。",
+    "keywords": "讀書會, 閱讀, 數位排毒, 正念, 書籍討論, 閱讀社群"
+  },
+  "nav": {
+    "home": "首頁",
+    "books": "書單",
+    "events": "活動",
+    "about": "關於我們",
+    "joinUs": "加入我們",
+    "join": "加入"
+  },
+  "home": {
+    "hero": {
+      "title": "休息、閱讀、重新連結的空間，",
+      "titleLine2": "一頁一頁慢慢來。",
+      "subtitle": "來加入對話吧！",
+      "ctaBookClub": "讀書會",
+      "ctaDetox": "數位排毒"
+    },
+    "recentReads": "近期書單",
+    "viewAll": "查看全部",
+    "browseBooks": "瀏覽書單"
+  },
+  "whyUs": {
+    "title": "為什麼選擇我們",
+    "monthlyPicks": {
+      "title": "每月精選",
+      "desc": "每月一本新書——從小說到心理學，應有盡有。"
+    },
+    "welcomingCommunity": {
+      "title": "友善社群",
+      "desc": "友善、有主持的討論，歡迎所有閱讀程度的讀者。"
+    },
+    "growTogether": {
+      "title": "一起成長",
+      "desc": "嘗試舒適圈外的主題，讓驚喜發生。"
+    }
+  },
+  "events": {
+    "title": "活動",
+    "joinBookClub": "加入讀書會",
+    "chooseLocation": "選擇您的地點並報名。只需提交一次。",
+    "welcomeEvent": "歡迎報名 {eventName}",
+    "taiwan": "台灣",
+    "netherlands": "荷蘭",
+    "registrationForm": "報名表單",
+    "readingDays": "閱讀天數",
+    "clubsHeld": "舉辦場次",
+    "readersJoined": "參與讀者",
+    "digitalDetox": {
+      "title": "數位排毒",
+      "description": "從不斷的通知中溫柔地重置。暫時放下手機，加入我們的慢讀、正念閱讀。",
+      "step1": "選擇一個時段斷線（從 25 分鐘開始）。",
+      "step2": "把手機放在觸不到的地方；設定勿擾模式。",
+      "step3": "閱讀一本書或在筆記本上寫字。就這樣。",
+      "tip": "提示：從小處開始，保持一致。我們會在讀書會時每週確認進度。"
+    }
+  },
+  "books": {
+    "title": "書單",
+    "summary": "書籍簡介",
+    "readingNotes": "讀書筆記",
+    "notesComingSoon": "詳細的讀書筆記即將上線，敬請期待...",
+    "notesNotice": "想要第一時間收到更新通知嗎？歡迎加入我們的讀書會！",
+    "register": "立即報名",
+    "discussionPoints": "討論重點",
+    "question1": "這本書最讓你印象深刻的是什麼？",
+    "question2": "你會如何應用書中的概念在生活中？",
+    "question3": "有沒有什麼觀點你不太認同？",
+    "relatedLinks": "相關連結",
+    "buyBook": "購書連結",
+    "fullNotes": "完整筆記",
+    "backToBooks": "返回書單",
+    "bookClubDate": "讀書會日期：",
+    "moreBooks": "更多書評",
+    "followUs": "追蹤我們"
+  },
+  "about": {
+    "ourStory": "我們的故事",
+    "storyContent": "Book Digest 是一個休息、閱讀、重新連結的社群。每個月我們會選擇一本跨領域的書——從小說到心理學、世界歷史到個人理財——然後聚在一起討論。",
+    "whyUs": "為什麼選擇我們",
+    "reason1": "每月一本新書——發現舒適圈外的世界。",
+    "reason2": "友善、有主持的討論；歡迎新讀者加入。",
+    "reason3": "驚喜往往成為旅程中最美好的部分。"
+  },
+  "footer": {
+    "events": "活動",
+    "bookClub": "讀書會",
+    "unplugProject": "斷線計畫",
+    "getInvolved": "參與方式",
+    "beAHost": "成為主持人",
+    "signUpForms": "報名表單",
+    "aboutUs": "關於我們",
+    "ourStory": "我們的故事",
+    "instagram": "Instagram",
+    "podcast": "Podcast",
+    "helpSupport": "幫助與支援",
+    "contactUs": "聯絡我們",
+    "terms": "條款與細則",
+    "privacy": "隱私權政策",
+    "copyright": "© 2025 BOOK DIGEST"
+  },
+  "form": {
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "age": "年齡",
+    "profession": "職業",
+    "email": "電子郵件",
+    "instagram": "Instagram（選填）",
+    "referral": "您是如何得知我們的？",
+    "referralOther": "請說明",
+    "consent": "我同意條款與細則",
+    "submit": "提交",
+    "submitting": "提交中...",
+    "success": "感謝您的報名！",
+    "error": "出了點問題，請再試一次。"
+  },
+  "modal": {
+    "detoxTitle": "數位排毒",
+    "detoxIntro": "放下手機，拿起書本。加入我們的社群實驗，斷線並重新掌握你的注意力。",
+    "detoxFeature1": "簡單的每日提示，減少螢幕時間",
+    "detoxFeature2": "每週與讀書會成員確認進度",
+    "detoxFeature3": "選擇性：分享你注意到的反思",
+    "imIn": "我要參加",
+    "maybeLater": "下次再說"
+  },
+  "sidebar": {
+    "podcast": "Podcast",
+    "podcastDesc": "聽我們聊聊這本書的心得與延伸討論",
+    "listenPodcast": "收聽 Podcast",
+    "moreBooks": "更多書評",
+    "viewAll": "查看全部 →",
+    "followUs": "追蹤我們"
+  }
+}

@@ -27,7 +27,7 @@ flowchart TD
   U[Visitor Browser] -->|HTTP/HTTPS| NX[Next.js on Vercel]
   NX -->|Static + ISR| PG[Pages/Routes]
   PG -->|read| JD[(JSON data\n/books.json, /stats.json)]
-  PG -->|submit| FP[Form Processor\n(Formspree/Tally/Airtable)]
+  PG -->|submit| FP["Form Processor\n(Formspree/Tally/Airtable)"]
   subgraph Client
     U
   end
@@ -65,6 +65,10 @@ flowchart TD
 Core components
 - `BookCard`: cover, title, author, date; opens modal.
 - `BookModal`: focus trap, Esc/overlay close, deep-link awareness.
+- `BookCarousel`: Book carousel showing 5 at a time; navigation arrows and pagination dots; sorted by readDate descending.
+- `BookArticleSidebar`: Right sidebar for book article pages with Podcast links, article list, social links.
+- `PageFlipAnimation`: Page flip animation with 3D transform; supports autoplay and reduced-motion.
+- `SectionDivider`: White line separator between sections; customizable color and thickness.
 - `Counter`: animated integer counter with reduced-motion support.
 - `SignupForm`: location-aware (TW|NL), validation, honeypot, submission state.
 - `LangToggle`: next-intl integration, route-preserving switch.
@@ -72,8 +76,8 @@ Core components
 ## 4. Routing (Next.js App Router)
 - `/` → Home
 - `/books` → Grid; modal opened via search param or parallel route.
-- `/books/[slug]` → Open modal on load (SSR or client effect) for deep-link.
-- `/events` → Counters + forms
+- `/books/[slug]` → Full book article page (white background, sidebar, Reading Outpost style layout).
+- `/events` → Counters + forms; supports `?event=TW|NL` to filter single event.
 - `/about` → Story
 - `/contact`, `/terms`, `/privacy`
 - Locales: `/en/*`, `/zh/*` (Phase 2 locale routes; Phase 1 can use query/state)
@@ -135,7 +139,7 @@ sequenceDiagram
   F->>F: validate (age 13-120, email, referralOther)
   F->>P: POST submission (honeypot empty)
   P-->>F: 200/201
-  F->>U: show success; clear PII; log conversion (no PII)
+  F->>U: show success / clear PII / log conversion (no PII)
 ```
 
 ### 5.5 Form submission (Phase 2 custom)
@@ -203,9 +207,26 @@ export type Registration = {
 - `GET /api/books` → paginated books (if/when CMS/DB backs the list).
 
 ## 8. i18n Strategy
-- `next-intl` with message files: `/messages/en.json`, `/messages/zh.json`.
-- Language persistence: localStorage + Accept-Language fallback.
+- Library: `next-intl` (v3.19+) with message files: `/messages/en.json`, `/messages/zh.json`.
+- Configuration:
+  - Server-side: `lib/i18n.ts` with `getRequestConfig` for locale detection
+  - Client-side: `lib/useLocale.ts` hook for reading current locale
+  - Plugin: `next.config.mjs` with `createNextIntlPlugin`
+- Language persistence: Cookie (`locale`) with Accept-Language header fallback.
+- Language toggle: `components/LangToggle.tsx` integrated into Header.
+- Translation coverage: nav, home, whyUs, events, books, about, footer, form, modal, sidebar.
 - Keep slugs language-agnostic; provide localized fields where needed.
+
+## 8.1 SEO Strategy
+- Centralized configuration: `lib/seo.ts` with `defaultSEO` and per-page `pageSEO` objects.
+- Metadata includes: title, description, keywords, Open Graph, Twitter Cards.
+- Dynamic SEO: `generateBookSEO(book)` function for book pages.
+- Assets:
+  - `public/robots.txt` - crawler guidance
+  - `public/site.webmanifest` - PWA support with icons
+  - `app/sitemap.ts` - dynamic sitemap generation
+- Open Graph images: default `/og-image.png` with per-page overrides.
+- Meta robots: index,follow for public pages; noindex for utility pages.
 
 ## 9. Accessibility
 - Modal: aria-modal, role="dialog", focus trap, return focus on close.
