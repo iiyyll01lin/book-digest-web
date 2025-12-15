@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 export type ModalProps = {
   open: boolean;
@@ -12,16 +12,24 @@ export type ModalProps = {
 export default function Modal({ open, onClose, title, children }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const lastActiveRef = useRef<HTMLElement | null>(null);
+  
+  // Stable reference for onClose to prevent effect re-registration
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+  
+  const handleClose = useCallback(() => {
+    onCloseRef.current();
+  }, []);
 
   // Close on ESC key
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, handleClose]);
 
   // Focus trap and restore focus
   useEffect(() => {
@@ -71,7 +79,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
     >
       <div
         className="absolute inset-0 bg-black/60"
-        onClick={onClose}
+        onClick={handleClose}
         aria-hidden="true"
       />
       <div className="absolute inset-0 grid place-items-center px-4 py-8 overflow-y-auto">
@@ -83,7 +91,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
             <div className="flex items-start justify-between gap-4">
               <h2 id="modal-title" className="text-xl font-bold text-white">{title}</h2>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 aria-label="Close dialog"
                 className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
               >

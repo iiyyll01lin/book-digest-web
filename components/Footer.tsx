@@ -1,9 +1,8 @@
-'use client';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 
-export default function Footer() {
-  const t = useTranslations('footer');
+export default async function Footer() {
+  const t = await getTranslations('footer');
   return (
     <footer className="bg-brand-navy border-t border-white/10">
       {/* Top divider with centered logo/text - smaller */}

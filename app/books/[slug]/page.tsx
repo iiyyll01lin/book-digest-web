@@ -4,17 +4,17 @@ import { notFound } from 'next/navigation';
 import { Suspense, cache } from 'react';
 import dynamic from 'next/dynamic';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { getBooksSync, getLocalizedBook } from '@/lib/books';
+import { getBooksSync, getLocalizedBook, getBookBySlugSync } from '@/lib/books';
+import { BLUR_BOOK_COVER_LARGE } from '@/lib/constants';
 
-// 快取書籍資料查詢（避免重複運算）
+// Cache book data query (using index lookup, O(1) complexity)
 const getBookBySlug = cache((slug: string) => {
-  const allBooks = getBooksSync();
-  return allBooks.find((b) => b.slug === slug);
+  return getBookBySlugSync(slug);
 });
 
 const getAllBooks = cache(() => getBooksSync());
 
-// 動態載入側邊欄（非首屏內容）
+// Dynamically load sidebar (non-critical above-the-fold content)
 const BookArticleSidebar = dynamic(() => import('@/components/BookArticleSidebar'), {
   loading: () => (
     <div className="space-y-6">
@@ -25,7 +25,7 @@ const BookArticleSidebar = dynamic(() => import('@/components/BookArticleSidebar
   ),
 });
 
-// 生成靜態路徑（SSG 優化）
+// Generate static paths (SSG optimization)
 export async function generateStaticParams() {
   const books = getAllBooks();
   return books.map((book) => ({
@@ -33,7 +33,7 @@ export async function generateStaticParams() {
   }));
 }
 
-// 生成 Metadata（SEO 優化）
+// Generate Metadata (SEO optimization)
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
@@ -56,11 +56,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-// 預先計算的 shimmer SVG（避免每次渲染重新生成）
-const BLUR_DATA_URL = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjI0IiBoZWlnaHQ9IjMzNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjI0IiBoZWlnaHQ9IjMzNiIgZmlsbD0iIzFhMzY1ZCIvPjwvc3ZnPg==';
-
 export default async function BookArticlePage({ params }: { params: Promise<{ slug: string }> }) {
-  // 並行取得所有需要的資料
+  // Fetch all required data in parallel
   const [{ slug }, t, locale] = await Promise.all([
     params,
     getTranslations('books'),
@@ -88,7 +85,7 @@ export default async function BookArticlePage({ params }: { params: Promise<{ sl
       <header className="relative bg-gradient-to-b from-brand-navy to-brand-blue">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-12 pb-24 md:pt-16 md:pb-32">
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-            {/* Book Cover - 優化圖片載入 */}
+            {/* Book Cover - Optimized image loading */}
             <div className="flex-shrink-0">
               <div className="relative w-48 md:w-56 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/20">
                 <Image
@@ -99,7 +96,7 @@ export default async function BookArticlePage({ params }: { params: Promise<{ sl
                   className="object-cover"
                   priority
                   placeholder="blur"
-                  blurDataURL={BLUR_DATA_URL}
+                  blurDataURL={BLUR_BOOK_COVER_LARGE}
                 />
               </div>
             </div>

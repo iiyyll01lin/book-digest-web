@@ -1,21 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { getBooksSync, getLocalizedTitle } from '@/lib/books';
+import { getRecentBooksSync, getLocalizedTitle } from '@/lib/books';
+import { BLUR_BOOK_COVER } from '@/lib/constants';
 
 export default async function BookWall() {
   const t = await getTranslations('home');
   const locale = await getLocale();
   
-  // Get books and sort by readDate descending (newest first), take first 40
-  const sortedBooks = [...getBooksSync()]
-    .sort((a, b) => {
-      if (!a.readDate && !b.readDate) return 0;
-      if (!a.readDate) return 1;
-      if (!b.readDate) return -1;
-      return new Date(b.readDate).getTime() - new Date(a.readDate).getTime();
-    })
-    .slice(0, 40);
+  // Use pre-sorted function, avoid re-sorting on each render
+  const sortedBooks = getRecentBooksSync(40);
 
   return (
     <section aria-labelledby="books-wall-heading" className="bg-brand-navy">
@@ -26,9 +20,9 @@ export default async function BookWall() {
         </div>
 
         <ul className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 md:gap-6">
-          {sortedBooks.map((book) => (
+          {sortedBooks.map((book, index) => (
             <li key={book.id} className="group">
-              <Link href={`/books/${book.slug}`} className="block">
+              <Link href={`/books/${book.slug}`} className="block" prefetch={false}>
                 <div className="relative aspect-[7/10] overflow-hidden rounded-md bg-white shadow ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-[1.03]">
                   <Image
                     src={book.coverUrl || '/images/placeholder-cover.svg'}
@@ -36,6 +30,9 @@ export default async function BookWall() {
                     fill
                     sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 16vw, 12.5vw"
                     className="object-cover"
+                    loading={index < 6 ? 'eager' : 'lazy'}
+                    placeholder="blur"
+                    blurDataURL={BLUR_BOOK_COVER}
                   />
                   {/* Hover overlay with book info */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-2 md:p-3">

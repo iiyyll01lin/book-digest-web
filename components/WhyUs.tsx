@@ -1,40 +1,49 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { BLUR_SQUARE } from '@/lib/constants';
+
+// Move items to module level to avoid recreation on each render
+const ITEMS = [
+  {
+    titleKey: 'reason1Title',
+    descKey: 'reason1Desc',
+    icon: '/images/elements/whyus-06.png',
+  },
+  {
+    titleKey: 'reason2Title',
+    descKey: 'reason2Desc',
+    icon: '/images/elements/whyus-07.png',
+  },
+  {
+    titleKey: 'reason3Title',
+    descKey: 'reason3Desc',
+    icon: '/images/elements/why us-08.png',
+  },
+] as const;
 
 export default function WhyUs() {
   const t = useTranslations('about');
-  
-  const items = [
-    {
-      titleKey: 'reason1Title',
-      descKey: 'reason1Desc',
-      icon: '/images/elements/whyus-06.png',
-    },
-    {
-      titleKey: 'reason2Title',
-      descKey: 'reason2Desc',
-      icon: '/images/elements/whyus-07.png',
-    },
-    {
-      titleKey: 'reason3Title',
-      descKey: 'reason3Desc',
-      icon: '/images/elements/why us-08.png',
-    },
-  ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const goToPrev = useCallback(() => {
-    setCurrentIndex((prev) => (prev <= 0 ? items.length - 1 : prev - 1));
-  }, [items.length]);
+    setCurrentIndex((prev) => (prev <= 0 ? ITEMS.length - 1 : prev - 1));
+  }, []);
 
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev >= items.length - 1 ? 0 : prev + 1));
-  }, [items.length]);
+    setCurrentIndex((prev) => (prev >= ITEMS.length - 1 ? 0 : prev + 1));
+  }, []);
 
-  const currentItem = items[currentIndex];
+  // Pre-compute next index for image preloading
+  const nextIndex = useMemo(() => 
+    (currentIndex + 1) % ITEMS.length, 
+    [currentIndex]
+  );
+
+  const currentItem = ITEMS[currentIndex];
+  const nextItem = ITEMS[nextIndex];
 
   return (
     <section aria-labelledby="why-us-heading" className="bg-brand-navy">
@@ -70,7 +79,21 @@ export default function WhyUs() {
                   alt="" 
                   fill
                   sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 256px"
-                  className="object-contain transition-opacity duration-300" 
+                  className="object-contain transition-opacity duration-300"
+                  priority
+                  placeholder="blur"
+                  blurDataURL={BLUR_SQUARE}
+                />
+                {/* Preload next image */}
+                <Image
+                  src={nextItem.icon}
+                  alt=""
+                  fill
+                  sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 256px"
+                  className="object-contain opacity-0 absolute"
+                  aria-hidden="true"
+                  placeholder="blur"
+                  blurDataURL={BLUR_SQUARE}
                 />
               </div>
               
@@ -99,7 +122,7 @@ export default function WhyUs() {
 
           {/* Pagination Dots */}
           <div className="flex justify-center gap-2 mt-8">
-            {items.map((_, idx) => (
+            {ITEMS.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}

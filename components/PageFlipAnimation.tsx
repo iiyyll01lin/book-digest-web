@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 
 type PageFlipProps = {
@@ -31,9 +31,24 @@ export default function PageFlipAnimation({
   const [flipDirection, setFlipDirection] = useState<'next' | 'prev'>('next');
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const reduceMotion =
+  
+  // Cache reduceMotion check with useMemo
+  const reduceMotion = useMemo(() =>
     typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+    []
+  );
+
+  // Pre-compute next and previous page indices
+  const nextPage = useMemo(() => 
+    (currentPage + 1) % images.length, 
+    [currentPage, images.length]
+  );
+  
+  const prevPage = useMemo(() => 
+    currentPage > 0 ? currentPage - 1 : 0, 
+    [currentPage]
+  );
 
   // Go to next page (loops back to first when at the end)
   const goNext = useCallback(() => {
@@ -101,9 +116,6 @@ export default function PageFlipAnimation({
     );
   }
 
-  const nextPage = (currentPage + 1) % images.length;
-  const prevPage = currentPage > 0 ? currentPage - 1 : 0;
-
   // Click handler
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -153,6 +165,18 @@ export default function PageFlipAnimation({
               fill
               sizes="(max-width: 768px) 100vw, 448px"
               className="object-contain"
+              priority={currentPage === 0}
+            />
+          </div>
+
+          {/* Preload next page for smooth transitions */}
+          <div className="absolute inset-0 opacity-0 pointer-events-none" aria-hidden="true">
+            <Image
+              src={images[nextPage]}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 448px"
+              className="object-contain"
             />
           </div>
 
@@ -162,10 +186,7 @@ export default function PageFlipAnimation({
           {/* Flipping page animation (simplified cross-fade with subtle 3D hint) */}
           {isFlipping && (
             <div
-              className="absolute inset-0 z-20"
-              style={{
-                animation: flipDirection === 'next' ? 'page-turn-next 0.6s ease-in-out forwards' : 'page-turn-prev 0.6s ease-in-out forwards',
-              }}
+              className={`absolute inset-0 z-20 ${flipDirection === 'next' ? 'animate-page-turn-next' : 'animate-page-turn-prev'}`}
             >
               <Image
                 src={images[flipDirection === 'next' ? nextPage : prevPage]}
@@ -226,30 +247,6 @@ export default function PageFlipAnimation({
           ))}
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes page-turn-next {
-          0% {
-            opacity: 0;
-            transform: translateX(20px) rotateY(-15deg);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0) rotateY(0deg);
-          }
-        }
-        
-        @keyframes page-turn-prev {
-          0% {
-            opacity: 0;
-            transform: translateX(-20px) rotateY(15deg);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0) rotateY(0deg);
-          }
-        }
-      `}</style>
     </div>
   );
 }

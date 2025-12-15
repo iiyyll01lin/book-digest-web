@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 type SidebarProps = {
@@ -41,21 +42,22 @@ export default function BookArticleSidebar({
           <ul className="mt-3 space-y-2">
             {articles.slice(0, 5).map((article) => (
               <li key={article.slug}>
-                <a
+                <Link
                   href={`/books/${article.slug}`}
                   className="block text-sm text-gray-700 hover:text-brand-pink transition-colors hover:underline"
+                  prefetch={false}
                 >
                   {article.title}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <a
+          <Link
             href="/books"
             className="mt-4 inline-block text-sm font-medium text-brand-pink hover:underline"
           >
             {t('viewAll')}
-          </a>
+          </Link>
         </div>
       )}
 

@@ -8,15 +8,15 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 圖片優化設定
+  // Image optimization settings
   images: {
-    // 啟用現代圖片格式（AVIF 優先，WebP 備用）
+    // Enable modern image formats (AVIF preferred, WebP fallback)
     formats: ['image/avif', 'image/webp'],
-    // 定義裝置尺寸斷點
+    // Define device size breakpoints
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    // 定義圖片尺寸（用於 sizes 屬性）
+    // Define image sizes (for sizes attribute)
     imageSizes: [16, 32, 48, 64, 96, 128, 192, 256],
-    // 如果有使用外部圖片來源，在這裡配置
+    // Configure external image sources here
     remotePatterns: [
       {
         protocol: 'https',
@@ -24,12 +24,25 @@ const nextConfig = {
       },
     ],
   },
-  // Enable polling for file changes (useful in Docker/WSL/VM)
-  webpack: (config) => {
-    config.watchOptions = {
-      poll: 1000, // Check for changes every second
-      aggregateTimeout: 300, // Delay before rebuilding
-    };
+  // Bundle splitting optimization
+  experimental: {
+    // Optimize specific package imports (tree-shaking)
+    optimizePackageImports: ['lucide-react', 'next-intl'],
+  },
+  // Modular imports optimization
+  modularizeImports: {
+    'lucide-react': {
+      transform: 'lucide-react/dist/esm/icons/{{kebabCase member}}',
+    },
+  },
+  // Enable polling for file changes in development (useful in Docker/WSL/VM)
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.watchOptions = {
+        poll: 1000, // Check for changes every second
+        aggregateTimeout: 300, // Delay before rebuilding
+      };
+    }
     return config;
   },
 };

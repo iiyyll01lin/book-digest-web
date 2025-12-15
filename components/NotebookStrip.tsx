@@ -1,11 +1,9 @@
-// filepath: /mnt/d/workspace/book-digest-web/components/NotebookStrip.tsx
-'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export default function NotebookStrip() {
-  const tModal = useTranslations('modal');
+export default async function NotebookStrip() {
+  const tModal = await getTranslations('modal');
   const frames = [1, 2, 3, 4, 5, 6].map((n) => `/images/notebook/notebook-0${n}.png`);
   return (
     <section className="bg-brand-navy">

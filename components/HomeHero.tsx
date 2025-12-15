@@ -1,8 +1,14 @@
 "use client";
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import Modal from '@/components/Modal';
 import PageFlipAnimation from '@/components/PageFlipAnimation';
+
+// Dynamically import Modal (non-critical, only shown on user interaction)
+const Modal = dynamic(() => import('@/components/Modal'), {
+  ssr: false,
+  loading: () => null,
+});
 
 export default function HomeHero() {
   const [open, setOpen] = useState(false);

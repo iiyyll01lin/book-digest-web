@@ -3,6 +3,9 @@ import BookWall from '@/components/BookWall';
 import WhyUs from '@/components/WhyUs';
 import SectionDivider from '@/components/SectionDivider';
 
+// Force static generation for better performance
+export const dynamic = 'force-static';
+
 export default function HomePage() {
   return (
     <>

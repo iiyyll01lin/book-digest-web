@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import SignupForm from '@/components/SignupForm';
+import { BLUR_POSTER } from '@/lib/constants';
 
 function JoinUsContent() {
   const t = useTranslations('events');
@@ -74,6 +75,8 @@ function JoinUsContent() {
                 fill
                 sizes="(max-width: 1024px) 420px, 50vw"
                 className="object-cover"
+                placeholder="blur"
+                blurDataURL={BLUR_POSTER}
               />
             </div>
           </div>
@@ -144,6 +147,9 @@ function JoinUsContent() {
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL={BLUR_POSTER}
                 />
               </div>
             </div>

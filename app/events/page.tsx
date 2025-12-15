@@ -1,71 +1,14 @@
-'use client';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import Image from 'next/image';
 import stats from '../../data/stats.json';
-import { useEffect, useRef, useState, Suspense } from 'react';
+import Counter from '@/components/Counter';
+import { BLUR_POSTER } from '@/lib/constants';
 
-function useOnceInView<T extends HTMLElement>() {
-  const ref = useRef<T | null>(null);
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    if (!ref.current || seen) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting && e.intersectionRatio >= 0.5) {
-            setSeen(true);
-            io.disconnect();
-            break;
-          }
-        }
-      },
-      { threshold: [0, 0.25, 0.5, 0.75, 1] }
-    );
-    io.observe(ref.current);
-    return () => io.disconnect();
-  }, [seen]);
-  return { ref, seen } as const;
-}
+// Force static generation for better performance
+export const dynamic = 'force-static';
 
-function Counter({ target, label }: { target: number; label: string }) {
-  const { ref, seen } = useOnceInView<HTMLDivElement>();
-  const [value, setValue] = useState(0);
-  const reduceMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  useEffect(() => {
-    if (!seen) return;
-    if (reduceMotion) {
-      setValue(target);
-      return;
-    }
-    const duration = 1200;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(1, elapsed / duration);
-      setValue(Math.round(target * progress));
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [seen, target, reduceMotion]);
-
-  return (
-    <div ref={ref} className="text-center">
-      <div className="text-sm text-white/70 font-outfit uppercase tracking-wider">
-        {label}
-      </div>
-      <div className="text-5xl md:text-6xl font-bold tabular-nums font-outfit mt-1">
-        {value.toLocaleString()}
-      </div>
-    </div>
-  );
-}
-
-// Event Section Component - Image only, no text overlay
+// Event Section Component - Server Component
 function EventSection({
   image,
   title,
@@ -73,6 +16,7 @@ function EventSection({
   signupUrl,
   signupText = 'Sign Up',
   imagePosition = 'left',
+  priority = false,
 }: {
   image: string;
   title: string;
@@ -80,6 +24,7 @@ function EventSection({
   signupUrl?: string;
   signupText?: string;
   imagePosition?: 'left' | 'right';
+  priority?: boolean;
 }) {
   const imageBlock = (
     <div className="w-full lg:w-1/2">
@@ -90,6 +35,9 @@ function EventSection({
           fill
           sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover"
+          loading={priority ? 'eager' : 'lazy'}
+          placeholder="blur"
+          blurDataURL={BLUR_POSTER}
         />
       </div>
     </div>
@@ -108,6 +56,7 @@ function EventSection({
           <Link
             href={signupUrl}
             className="inline-flex items-center px-8 py-3 rounded-full bg-brand-pink text-brand-navy font-semibold hover:brightness-110 transition-all uppercase tracking-wider text-sm"
+            prefetch={false}
           >
             {signupText}
           </Link>
@@ -133,13 +82,13 @@ function EventSection({
   );
 }
 
-function EventsContent() {
-  const t = useTranslations('events');
+export default async function EventsPage() {
+  const t = await getTranslations('events');
 
   return (
     <section className="bg-brand-navy text-white min-h-screen">
       <div className="mx-auto max-w-6xl px-6 py-16">
-        {/* Stats Counters */}
+        {/* Stats Counters - Client Component for animation */}
         <div className="grid grid-cols-3 gap-4 md:gap-8 mb-16">
           <Counter target={stats.readingDays} label={t('readingDays')} />
           <Counter target={stats.clubsHeld} label={t('clubsHeld')} />
@@ -155,6 +104,7 @@ function EventsContent() {
             signupUrl="/joinus?location=TW"
             signupText={t('signUp')}
             imagePosition="left"
+            priority={true}
           />
         </div>
 
@@ -193,19 +143,5 @@ function EventsContent() {
         </div>
       </div>
     </section>
-  );
-}
-
-export default function EventsPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="bg-brand-navy text-white min-h-screen flex items-center justify-center">
-          <div className="animate-pulse">Loading...</div>
-        </div>
-      }
-    >
-      <EventsContent />
-    </Suspense>
   );
 }

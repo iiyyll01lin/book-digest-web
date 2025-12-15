@@ -1,42 +1,95 @@
 import type { Book } from '@/types/book';
+import { unstable_cache } from 'next/cache';
+import booksData from '@/data/books.json';
 
-// Lazy load books data - only loaded once and cached
-let booksCache: Book[] | null = null;
+// ============================================
+// Performance optimization: Static import + Pre-built indexes
+// ============================================
 
+// Use static import instead of dynamic loading (loaded at compile time)
+const books: Book[] = booksData as Book[];
+
+// Pre-build slug index for O(1) lookup complexity
+const booksBySlug = new Map<string, Book>(books.map(b => [b.slug, b]));
+
+// Pre-build tag index
+const booksByTag = new Map<string, Book[]>();
+books.forEach(book => {
+  book.tags?.forEach(tag => {
+    if (!booksByTag.has(tag)) booksByTag.set(tag, []);
+    booksByTag.get(tag)!.push(book);
+  });
+});
+
+// Pre-sorted books list by date (avoid re-sorting on each request)
+const sortedBooksByDate = [...books].sort((a, b) => {
+  if (!a.readDate && !b.readDate) return 0;
+  if (!a.readDate) return 1;
+  if (!b.readDate) return -1;
+  return new Date(b.readDate).getTime() - new Date(a.readDate).getTime();
+});
+
+// ============================================
+// Public API
+// ============================================
+
+// Async version (for backward compatibility)
 export async function getBooks(): Promise<Book[]> {
-  if (booksCache) return booksCache;
-  
-  const booksData = await import('@/data/books.json');
-  booksCache = booksData.default as Book[];
-  return booksCache;
+  return books;
 }
 
-// Synchronous version for client components that need immediate access
+// Sync version (for server components)
 export function getBooksSync(): Book[] {
-  // Dynamic require for sync access - will be bundled
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const booksData = require('@/data/books.json');
-  return booksData.default || booksData;
+  return books;
 }
 
-// Get a single book by slug
+// Fast lookup using index - O(1) complexity
+export function getBookBySlugSync(slug: string): Book | undefined {
+  return booksBySlug.get(slug);
+}
+
+// Async version (for backward compatibility)
 export async function getBookBySlug(slug: string): Promise<Book | undefined> {
-  const books = await getBooks();
-  return books.find((b) => b.slug === slug);
+  return booksBySlug.get(slug);
 }
 
-// Get books sorted by date (newest first)
-export async function getRecentBooks(limit: number = 40): Promise<Book[]> {
-  const books = await getBooks();
-  return [...books]
-    .sort((a, b) => {
-      if (!a.readDate && !b.readDate) return 0;
-      if (!a.readDate) return 1;
-      if (!b.readDate) return -1;
-      return new Date(b.readDate).getTime() - new Date(a.readDate).getTime();
-    })
-    .slice(0, limit);
+// Get books by tag - O(1) complexity
+export function getBooksByTag(tag: string): Book[] {
+  return booksByTag.get(tag) || [];
 }
+
+// Get all tags
+export function getAllTags(): string[] {
+  return Array.from(booksByTag.keys());
+}
+
+// Get recent books using pre-sorted list
+export async function getRecentBooks(limit: number = 40): Promise<Book[]> {
+  return sortedBooksByDate.slice(0, limit);
+}
+
+// Sync version
+export function getRecentBooksSync(limit: number = 40): Book[] {
+  return sortedBooksByDate.slice(0, limit);
+}
+
+// ============================================
+// Server-side cache (for data that needs revalidation)
+// ============================================
+
+// Cache book stats (revalidate every 1 hour)
+export const getCachedBookStats = unstable_cache(
+  async () => {
+    return {
+      totalBooks: books.length,
+      totalTags: booksByTag.size,
+      latestBook: sortedBooksByDate[0],
+      oldestBook: sortedBooksByDate[sortedBooksByDate.length - 1],
+    };
+  },
+  ['book-stats'],
+  { revalidate: 3600 } // Revalidate every 1 hour
+);
 
 // Helper to get localized book data
 export function getLocalizedBook(book: Book, locale: string) {

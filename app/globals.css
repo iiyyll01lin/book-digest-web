@@ -10,3 +10,34 @@
 .focus-ring {
   @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-pink focus-visible:ring-offset-brand-navy;
 }
+
+/* Page flip animation keyframes (moved from inline styles for better performance) */
+@keyframes page-turn-next {
+  0% {
+    opacity: 0;
+    transform: translateX(20px) rotateY(-15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotateY(0deg);
+  }
+}
+
+@keyframes page-turn-prev {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) rotateY(15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotateY(0deg);
+  }
+}
+
+.animate-page-turn-next {
+  animation: page-turn-next 0.6s ease-out forwards;
+}
+
+.animate-page-turn-prev {
+  animation: page-turn-prev 0.6s ease-out forwards;
+}
