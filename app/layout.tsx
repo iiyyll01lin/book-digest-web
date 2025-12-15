@@ -6,12 +6,19 @@ import LangToggle from '@/components/LangToggle';
 import { defaultSEO } from '@/lib/seo';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
-import { Outfit } from 'next/font/google';
+import { Outfit, Noto_Sans_TC } from 'next/font/google';
 
 const outfit = Outfit({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-outfit',
+  display: 'swap',
+});
+
+const notoSansTC = Noto_Sans_TC({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-noto-tc',
   display: 'swap',
 });
 
@@ -22,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`h-full bg-brand-navy ${outfit.variable}`}>
+    <html lang={locale} className={`h-full bg-brand-navy ${outfit.variable} ${notoSansTC.variable}`}>
       <head>
         {/* Favicon and PWA */}
         <link rel="icon" href="/favicon.ico" sizes="any" />

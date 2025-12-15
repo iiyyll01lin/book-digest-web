@@ -26,8 +26,10 @@ const config: Config = {
         outfit: ['var(--font-outfit)', 'Outfit', 'system-ui', 'sans-serif'],
         // Display font for hero sections
         display: ['var(--font-outfit)', 'Outfit', 'system-ui', 'sans-serif'],
-        // Body text
-        body: ['system-ui', 'sans-serif'],
+        // Body text with Chinese font support
+        body: ['var(--font-noto-tc)', 'Noto Sans TC', 'system-ui', 'sans-serif'],
+        // Chinese font
+        chinese: ['var(--font-noto-tc)', 'Noto Sans TC', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         wider: '0.1em',
