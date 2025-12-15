@@ -1,10 +1,10 @@
-'use client';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import Image from 'next/image';
+import { BLUR_SQUARE } from '@/lib/constants';
 
-export default function AboutPage() {
-  const t = useTranslations('about');
+export default async function AboutPage() {
+  const t = await getTranslations('about');
 
   return (
     <section className="bg-brand-navy text-white min-h-screen">
@@ -42,6 +42,9 @@ export default function AboutPage() {
                 fill
                 sizes="(max-width: 768px) 160px, 192px"
                 className="object-contain"
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={BLUR_SQUARE}
               />
             </div>
             <div className="flex-1">
@@ -63,6 +66,9 @@ export default function AboutPage() {
                 fill
                 sizes="(max-width: 768px) 160px, 192px"
                 className="object-contain"
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={BLUR_SQUARE}
               />
             </div>
             <div className="flex-1">
@@ -84,6 +90,9 @@ export default function AboutPage() {
                 fill
                 sizes="(max-width: 768px) 160px, 192px"
                 className="object-contain"
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={BLUR_SQUARE}
               />
             </div>
             <div className="flex-1">

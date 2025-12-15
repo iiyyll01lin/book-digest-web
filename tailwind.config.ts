@@ -4,8 +4,12 @@ const config: Config = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    // Removed unused src directory to speed up scanning
   ],
+  // Performance: Only enable hover effects on devices that support hover
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {

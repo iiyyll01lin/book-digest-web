@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { getBooksSync, getLocalizedBook } from '@/lib/books';
+import { BLUR_BOOK_COVER } from '@/lib/constants';
 
 export default async function BooksPage() {
   const t = await getTranslations('books');
@@ -15,9 +16,9 @@ export default async function BooksPage() {
         <p className="text-white/80 mt-2">Past reads from our book club.</p>
 
         <ul className="mt-8 grid gap-x-6 gap-y-10 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-          {data.map((b) => (
+          {data.map((b, index) => (
             <li key={b.id} className="group">
-              <Link href={`/books/${b.slug}`} className="block">
+              <Link href={`/books/${b.slug}`} className="block" prefetch={false}>
                 <div className="relative aspect-[7/10] bg-white rounded-lg shadow-xl overflow-hidden">
                   <Image
                     src={b.coverUrl || '/images/placeholder-cover.svg'}
@@ -25,6 +26,9 @@ export default async function BooksPage() {
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                     className="object-cover"
+                    loading={index < 5 ? 'eager' : 'lazy'}
+                    placeholder="blur"
+                    blurDataURL={BLUR_BOOK_COVER}
                   />
                   {/* Hover overlay with book summary */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 md:p-4">

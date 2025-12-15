@@ -2,8 +2,63 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { useTranslations } from 'next-intl';
+
+// Use memo to optimize navigation link component
+const NavLink = memo(function NavLink({ 
+  href, 
+  isActive, 
+  children,
+  prefetch = true,
+}: { 
+  href: string; 
+  isActive: boolean; 
+  children: React.ReactNode;
+  prefetch?: boolean;
+}) {
+  const linkClass = `flex items-center justify-center font-medium transition-colors ${
+    isActive 
+      ? 'text-brand-pink font-bold' 
+      : 'text-white/95 hover:text-brand-pink'
+  }`;
+  
+  return (
+    <Link href={href} className={linkClass} prefetch={prefetch}>
+      {children}
+    </Link>
+  );
+});
+
+// Use memo to optimize mobile navigation link
+const MobileNavLink = memo(function MobileNavLink({
+  href,
+  isActive,
+  children,
+  onClick,
+}: {
+  href: string;
+  isActive: boolean;
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  const mobileLinkClass = `py-2 px-3 rounded-lg transition-colors ${
+    isActive
+      ? 'text-brand-pink font-bold bg-white/5'
+      : 'text-white hover:bg-white/10'
+  }`;
+  
+  return (
+    <Link 
+      href={href} 
+      className={mobileLinkClass}
+      onClick={onClick}
+      prefetch={false}
+    >
+      {children}
+    </Link>
+  );
+});
 
 export default function Header() {
   const t = useTranslations('nav');
@@ -11,44 +66,39 @@ export default function Header() {
   const pathname = usePathname();
 
   // Helper to check if link is active
-  const isActive = (href: string) => {
+  const isActive = useCallback((href: string) => {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
-  };
+  }, [pathname]);
 
-  const linkClass = (href: string) => 
-    `flex items-center justify-center font-medium transition-colors ${
-      isActive(href) 
-        ? 'text-brand-pink font-bold' 
-        : 'text-white/95 hover:text-brand-pink'
-    }`;
+  // Optimize close menu function with useCallback
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+  }, []);
 
-  const mobileLinkClass = (href: string) =>
-    `py-2 px-3 rounded-lg transition-colors ${
-      isActive(href)
-        ? 'text-brand-pink font-bold bg-white/5'
-        : 'text-white hover:bg-white/10'
-    }`;
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen(prev => !prev);
+  }, []);
 
   return (
     <header className="bg-brand-navy/95 backdrop-blur supports-[backdrop-filter]:bg-brand-navy/80 sticky top-0 z-40 border-b border-white/10 py-4">
       <div className="mx-auto max-w-6xl px-6 h-[100px] relative">
         {/* Desktop/tablet: grid layout with equal width nav items */}
         <div className="hidden md:grid grid-cols-5 items-center h-full pr-24">
-          <Link href="/books" className={linkClass('/books')}>{t('books')}</Link>
-          <Link href="/events" className={linkClass('/events')}>{t('events')}</Link>
-          <Link href="/" className="flex items-center justify-center" aria-label="Home">
+          <NavLink href="/books" isActive={isActive('/books')}>{t('books')}</NavLink>
+          <NavLink href="/events" isActive={isActive('/events')}>{t('events')}</NavLink>
+          <Link href="/" className="flex items-center justify-center" aria-label="Home" prefetch={true}>
             <Image src="/images/logo/logo-t.gif" alt="Book Digest logo" width={88} height={70} className="h-[70px] w-auto" unoptimized priority />
           </Link>
-          <Link href="/about" className={linkClass('/about')}>{t('about')}</Link>
-          <Link href="/joinus" className={linkClass('/joinus')}>{t('joinUs')}</Link>
+          <NavLink href="/about" isActive={isActive('/about')} prefetch={false}>{t('about')}</NavLink>
+          <NavLink href="/joinus" isActive={isActive('/joinus')} prefetch={false}>{t('joinUs')}</NavLink>
         </div>
 
         {/* Mobile: hamburger button on left, logo centered */}
         <div className="md:hidden h-[108px] flex items-center">
           {/* Hamburger button */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={toggleMobileMenu}
             className="p-2 -ml-2 text-white hover:bg-white/10 rounded-lg transition-colors"
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
@@ -80,34 +130,18 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-white/10 bg-brand-navy/98 backdrop-blur">
           <nav aria-label="Primary mobile" className="mx-auto max-w-6xl px-6 py-4 flex flex-col gap-3">
-            <Link 
-              href="/books" 
-              className={mobileLinkClass('/books')}
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <MobileNavLink href="/books" isActive={isActive('/books')} onClick={closeMobileMenu}>
               {t('books')}
-            </Link>
-            <Link 
-              href="/events" 
-              className={mobileLinkClass('/events')}
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            </MobileNavLink>
+            <MobileNavLink href="/events" isActive={isActive('/events')} onClick={closeMobileMenu}>
               {t('events')}
-            </Link>
-            <Link 
-              href="/about" 
-              className={mobileLinkClass('/about')}
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            </MobileNavLink>
+            <MobileNavLink href="/about" isActive={isActive('/about')} onClick={closeMobileMenu}>
               {t('about')}
-            </Link>
-            <Link 
-              href="/joinus" 
-              className={mobileLinkClass('/joinus')}
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            </MobileNavLink>
+            <MobileNavLink href="/joinus" isActive={isActive('/joinus')} onClick={closeMobileMenu}>
               {t('joinUs')}
-            </Link>
+            </MobileNavLink>
           </nav>
         </div>
       )}

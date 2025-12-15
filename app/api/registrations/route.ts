@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { listRegistrations } from '@/lib/notion';
 
-// 強制動態渲染（API 路由不適合靜態生成）
+// Force dynamic rendering (API routes are not suitable for static generation)
 export const dynamic = 'force-dynamic';
 
 // GET /api/registrations?limit=10

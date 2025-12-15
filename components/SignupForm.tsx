@@ -1,5 +1,5 @@
 'use client';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { z } from 'zod';
 
@@ -10,6 +10,7 @@ export type SignupFormProps = {
   endpoint?: string;
 };
 
+// Move schema to module level for better performance (only created once)
 const baseSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(100),
   lastName: z.string().min(1, 'Last name is required').max(100),
@@ -33,6 +34,19 @@ const baseSchema = z.object({
   website: z.string().optional(),
 });
 
+// Pre-built schema with superRefine (module level, created once)
+const formSchema = baseSchema.superRefine((data, ctx) => {
+  if (data.referral === 'Others') {
+    if (!data.referralOther || data.referralOther.trim().length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['referralOther'],
+        message: 'Please specify at least 2 characters',
+      });
+    }
+  }
+});
+
 export default function SignupForm({ location, endpoint }: SignupFormProps) {
   const t = useTranslations('form');
   const tEvents = useTranslations('events');
@@ -52,20 +66,6 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
     website: '',
   });
 
-  const schema = useMemo(() =>
-    baseSchema.superRefine((data, ctx) => {
-      if (data.referral === 'Others') {
-        if (!data.referralOther || data.referralOther.trim().length < 2) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['referralOther'],
-            message: 'Please specify at least 2 characters',
-          });
-        }
-      }
-    }),
-  []);
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target as HTMLInputElement & HTMLSelectElement;
     const { name } = target;
@@ -80,7 +80,7 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
     setSubmitting(true);
     setSuccess(null);
 
-    const res = schema.safeParse(values);
+    const res = formSchema.safeParse(values);
     if (!res.success) {
       const fieldErrors: Record<string, string> = {};
       for (const issue of res.error.issues) {

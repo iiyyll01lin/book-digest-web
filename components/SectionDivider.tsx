@@ -1,7 +1,20 @@
+// Pre-computed class mappings (avoid recreation on each render)
+const COLOR_CLASSES = {
+  white: 'bg-white/30',
+  pink: 'bg-brand-pink/50',
+  navy: 'bg-brand-navy/30',
+} as const;
+
+const THICKNESS_CLASSES = {
+  thin: 'h-px',
+  medium: 'h-0.5',
+  thick: 'h-1',
+} as const;
+
 type SectionDividerProps = {
   className?: string;
-  color?: 'white' | 'pink' | 'navy';
-  thickness?: 'thin' | 'medium' | 'thick';
+  color?: keyof typeof COLOR_CLASSES;
+  thickness?: keyof typeof THICKNESS_CLASSES;
 };
 
 export default function SectionDivider({
@@ -9,21 +22,9 @@ export default function SectionDivider({
   color = 'white',
   thickness = 'thin',
 }: SectionDividerProps) {
-  const colorClasses = {
-    white: 'bg-white/30',
-    pink: 'bg-brand-pink/50',
-    navy: 'bg-brand-navy/30',
-  };
-
-  const thicknessClasses = {
-    thin: 'h-px',
-    medium: 'h-0.5',
-    thick: 'h-1',
-  };
-
   return (
     <div
-      className={`w-full ${colorClasses[color]} ${thicknessClasses[thickness]} ${className}`}
+      className={`w-full ${COLOR_CLASSES[color]} ${THICKNESS_CLASSES[thickness]} ${className}`}
       role="separator"
       aria-hidden="true"
     />

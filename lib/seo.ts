@@ -1,7 +1,14 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 // Base URL for the site
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bookdigest.club';
+
+// Viewport configuration (Next.js 14 recommends separate export)
+export const defaultViewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#0F2E66',
+};
 
 // Default SEO configuration
 export const defaultSEO: Metadata = {

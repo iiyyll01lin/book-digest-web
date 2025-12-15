@@ -1,8 +1,9 @@
 'use client';
 
+import { memo } from 'react';
 import { useLocale } from '@/lib/useLocale';
 
-export default function LangToggle() {
+export default memo(function LangToggle() {
   const { locale, setLocale } = useLocale();
 
   return (
@@ -41,4 +42,4 @@ export default function LangToggle() {
       </div>
     </div>
   );
-}
+});
