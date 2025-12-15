@@ -160,7 +160,7 @@ function JoinUsContent() {
   );
 }
 
-export default function JoinUsPage() {
+export default function JoinUsClient() {
   return (
     <Suspense
       fallback={

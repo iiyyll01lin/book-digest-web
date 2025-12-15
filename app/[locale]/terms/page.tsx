@@ -1,9 +1,13 @@
 import { getTranslations } from 'next-intl/server';
+import { locales, setRequestLocale } from '@/lib/i18n';
 
-// Force static generation
-export const dynamic = 'force-static';
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
-export default async function TermsPage() {
+export default async function TermsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations('terms');
   return (
     <section className="bg-brand-navy text-white min-h-screen">

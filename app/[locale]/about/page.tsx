@@ -2,8 +2,15 @@ import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BLUR_SQUARE } from '@/lib/constants';
+import { locales, setRequestLocale } from '@/lib/i18n';
 
-export default async function AboutPage() {
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations('about');
 
   return (

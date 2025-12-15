@@ -1,46 +1,46 @@
 import { MetadataRoute } from 'next';
 import { getBooksSync } from '@/lib/books';
+import { locales, defaultLocale } from '@/lib/i18n';
 
 // Use sync version to avoid Promise overhead (data is already static)
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bookdigest.club';
   const books = getBooksSync();
 
-  // Static pages
-  const staticPages = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/books`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/events`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    },
-  ];
+  // Generate URLs for each locale (default locale has no prefix)
+  const getLocalizedUrl = (path: string, locale: string) => {
+    if (locale === defaultLocale) {
+      return `${baseUrl}${path}`;
+    }
+    return `${baseUrl}/${locale}${path}`;
+  };
 
-  // Dynamic book pages
-  const bookPages = books.map((book) => ({
-    url: `${baseUrl}/books/${book.slug}`,
-    lastModified: book.readDate ? new Date(book.readDate) : new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.8,
-  }));
+  // Static pages with all locales
+  const staticPaths = ['', '/books', '/events', '/about', '/joinus', '/privacy', '/terms'];
+  const staticPages = staticPaths.flatMap((path) =>
+    locales.map((locale) => {
+      let changeFrequency: 'weekly' | 'monthly' = 'weekly';
+      if (path === '/about' || path === '/privacy' || path === '/terms') {
+        changeFrequency = 'monthly';
+      }
+      return {
+        url: getLocalizedUrl(path, locale),
+        lastModified: new Date(),
+        changeFrequency,
+        priority: path === '' ? 1 : path === '/books' || path === '/events' ? 0.9 : 0.7,
+      };
+    })
+  );
+
+  // Dynamic book pages with all locales
+  const bookPages = books.flatMap((book) =>
+    locales.map((locale) => ({
+      url: getLocalizedUrl(`/books/${book.slug}`, locale),
+      lastModified: book.readDate ? new Date(book.readDate) : new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    }))
+  );
 
   return [...staticPages, ...bookPages];
 }

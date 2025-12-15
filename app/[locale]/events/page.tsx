@@ -1,9 +1,14 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import Image from 'next/image';
-import stats from '../../data/stats.json';
+import stats from '@/data/stats.json';
 import Counter from '@/components/Counter';
 import { BLUR_POSTER } from '@/lib/constants';
+import { locales, setRequestLocale } from '@/lib/i18n';
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 // Event Section Component - Server Component
 function EventSection({
@@ -79,7 +84,9 @@ function EventSection({
   );
 }
 
-export default async function EventsPage() {
+export default async function EventsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations('events');
 
   return (

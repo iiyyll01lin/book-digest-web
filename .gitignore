@@ -17,3 +17,5 @@ tsconfig.tsbuildinfo
 
 # test html view
 /test
+playwright-report/
+test-results/

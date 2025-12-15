@@ -3,9 +3,10 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Suspense, cache } from 'react';
 import dynamic from 'next/dynamic';
-import { getTranslations, getLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { getBooksSync, getLocalizedBook, getBookBySlugSync } from '@/lib/books';
 import { BLUR_BOOK_COVER_LARGE } from '@/lib/constants';
+import { locales, setRequestLocale } from '@/lib/i18n';
 
 // Cache book data query (using index lookup, O(1) complexity)
 const getBookBySlug = cache((slug: string) => {
@@ -25,18 +26,20 @@ const BookArticleSidebar = dynamic(() => import('@/components/BookArticleSidebar
   ),
 });
 
-// Generate static paths (SSG optimization)
+// Generate static paths for all books and locales (SSG optimization)
 export async function generateStaticParams() {
   const books = getAllBooks();
-  return books.map((book) => ({
-    slug: book.slug,
-  }));
+  return books.flatMap((book) => 
+    locales.map((locale) => ({
+      locale,
+      slug: book.slug,
+    }))
+  );
 }
 
 // Generate Metadata (SEO optimization)
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const locale = await getLocale();
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }) {
+  const { slug, locale } = await params;
   const rawBook = getBookBySlug(slug);
   
   if (!rawBook) {
@@ -56,13 +59,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function BookArticlePage({ params }: { params: Promise<{ slug: string }> }) {
-  // Fetch all required data in parallel
-  const [{ slug }, t, locale] = await Promise.all([
-    params,
-    getTranslations('books'),
-    getLocale(),
-  ]);
+export default async function BookArticlePage({ params }: { params: Promise<{ slug: string; locale: string }> }) {
+  // Get params first
+  const { slug, locale } = await params;
+  
+  // Enable static rendering BEFORE any getTranslations call
+  setRequestLocale(locale);
+
+  // Now safe to use getTranslations
+  const t = await getTranslations('books');
 
   const allBooks = getAllBooks();
   const rawBook = getBookBySlug(slug);
@@ -238,7 +243,7 @@ export default async function BookArticlePage({ params }: { params: Promise<{ sl
               </div>
             </main>
 
-            {/* Sidebar - 使用 Suspense 延遲載入 */}
+            {/* Sidebar */}
             <aside className="lg:col-span-1">
               <div className="sticky top-24">
                 <Suspense fallback={

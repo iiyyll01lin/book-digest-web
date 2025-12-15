@@ -1,12 +1,18 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getTranslations, getLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { getBooksSync, getLocalizedBook } from '@/lib/books';
 import { BLUR_BOOK_COVER } from '@/lib/constants';
+import { locales, setRequestLocale } from '@/lib/i18n';
 
-export default async function BooksPage() {
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export default async function BooksPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations('books');
-  const locale = await getLocale();
 
   const data = getBooksSync().map(b => getLocalizedBook(b, locale));
   return (

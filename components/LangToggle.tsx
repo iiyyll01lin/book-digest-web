@@ -1,10 +1,34 @@
 'use client';
 
 import { memo } from 'react';
-import { useLocale } from '@/lib/useLocale';
+import { usePathname, useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 
 export default memo(function LangToggle() {
-  const { locale, setLocale } = useLocale();
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const switchLocale = (newLocale: string) => {
+    // Get current path without locale prefix
+    const segments = pathname.split('/');
+    const currentLocale = segments[1];
+    
+    // Check if path starts with a locale
+    const hasLocalePrefix = ['en', 'zh'].includes(currentLocale);
+    
+    let newPath: string;
+    if (hasLocalePrefix) {
+      // Replace locale in path
+      segments[1] = newLocale;
+      newPath = segments.join('/');
+    } else {
+      // Add locale prefix
+      newPath = `/${newLocale}${pathname}`;
+    }
+    
+    router.push(newPath);
+  };
 
   return (
     <div
@@ -18,7 +42,7 @@ export default memo(function LangToggle() {
       <button
         role="tab"
         aria-selected={locale === 'en'}
-        onClick={() => setLocale('en')}
+        onClick={() => switchLocale('en')}
         className={`px-2 md:px-3 py-1 md:py-1.5 rounded-full font-medium font-outfit uppercase tracking-wider transition-colors ${
           locale === 'en'
             ? 'bg-brand-pink text-brand-navy'
@@ -30,7 +54,7 @@ export default memo(function LangToggle() {
       <button
         role="tab"
         aria-selected={locale === 'zh'}
-        onClick={() => setLocale('zh')}
+        onClick={() => switchLocale('zh')}
         className={`px-2 md:px-3 py-1 md:py-1.5 rounded-full font-medium font-outfit uppercase tracking-wider transition-colors ${
           locale === 'zh'
             ? 'bg-brand-pink text-brand-navy'
