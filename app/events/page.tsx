@@ -71,17 +71,19 @@ function EventSection({
   title,
   description,
   signupUrl,
+  signupText = 'Sign Up',
   imagePosition = 'left',
 }: {
   image: string;
   title: string;
   description: string;
   signupUrl?: string;
+  signupText?: string;
   imagePosition?: 'left' | 'right';
 }) {
   const imageBlock = (
     <div className="w-full lg:w-1/2">
-      <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3]">
+      <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[3/4]">
         <Image
           src={image}
           alt={title}
@@ -98,7 +100,7 @@ function EventSection({
       <h3 className="text-2xl md:text-3xl font-bold text-white font-outfit">
         {title}
       </h3>
-      <p className="mt-6 text-white/80 leading-relaxed whitespace-pre-line text-lg">
+      <p className="mt-6 text-white/80 leading-relaxed whitespace-pre-line text-lg font-outfit">
         {description}
       </p>
       {signupUrl && (
@@ -107,7 +109,7 @@ function EventSection({
             href={signupUrl}
             className="inline-flex items-center px-8 py-3 rounded-full bg-brand-pink text-brand-navy font-semibold hover:brightness-110 transition-all uppercase tracking-wider text-sm"
           >
-            Sign Up
+            {signupText}
           </Link>
         </div>
       )}
@@ -148,12 +150,10 @@ function EventsContent() {
         <div className="py-12">
           <EventSection
             image="/images/elements/AD-16.png"
-            title="Upcoming Book Club in Taipei, Taiwan"
-            description={`From bang to thud, this book traces how language grew from sensory experience into a uniquely human skill. With Pokémon, Japanese sounds, and child development as examples, it explores how meaning is built.
-
-Perfect for fans of linguistics, kids' minds, or human vs. AI thinking.
-Read with us this August!`}
+            title={t('taiwanTitle')}
+            description={t('taiwanDesc')}
             signupUrl="/joinus?location=TW"
+            signupText={t('signUp')}
             imagePosition="left"
           />
         </div>
@@ -167,13 +167,10 @@ Read with us this August!`}
         <div className="py-12">
           <EventSection
             image="/images/elements/AD-15.png"
-            title="Upcoming Book Club in Netherlands"
-            description={`When you think of the Netherlands, what comes to mind? Windmills, bikes, tulips?
-
-This book bursts the romanticised bubble and offers a sharp, accessible look into Dutch society — from social clique and gender diversity to workplace culture and sustainability.
-
-Not perfect — but honest.`}
+            title={t('nlTitle')}
+            description={t('nlDesc')}
             signupUrl="/joinus?location=NL"
+            signupText={t('signUp')}
             imagePosition="right"
           />
         </div>
@@ -187,24 +184,12 @@ Not perfect — but honest.`}
         <div id="detox" className="py-12">
           <EventSection
             image="/images/elements/AD-17.png"
-            title="Upcoming Digital Detox"
-            description={`For a few hours, we all unplugged.
-We ate together, read together, laughed together, and most importantly, we are present.
-
-Come unplug with us, your cozy little digital detox awaits!`}
+            title={t('detoxTitle')}
+            description={t('detoxDesc')}
             signupUrl="/joinus"
+            signupText={t('signUp')}
             imagePosition="left"
           />
-        </div>
-
-        {/* Join Us CTA */}
-        <div className="text-center pt-12 mt-8 border-t border-white/10">
-          <Link
-            href="/joinus"
-            className="inline-flex items-center px-10 py-4 rounded-full bg-brand-pink text-brand-navy font-bold text-lg hover:brightness-110 transition-all uppercase tracking-wider"
-          >
-            {t('registrationForm')}
-          </Link>
         </div>
       </div>
     </section>

@@ -14,11 +14,11 @@ export default async function BooksPage() {
         <h1 className="text-3xl font-bold tracking-wide">{t('title')}</h1>
         <p className="text-white/80 mt-2">Past reads from our book club.</p>
 
-        <ul className="mt-8 grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+        <ul className="mt-8 grid gap-x-6 gap-y-10 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
           {data.map((b) => (
             <li key={b.id} className="group">
               <Link href={`/books/${b.slug}`} className="block">
-                <div className="relative aspect-[7/10] bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div className="relative aspect-[7/10] bg-white rounded-lg shadow-xl overflow-hidden">
                   <Image
                     src={b.coverUrl || '/images/placeholder-cover.svg'}
                     alt={b.displayTitle}
@@ -41,9 +41,9 @@ export default async function BooksPage() {
                     )}
                   </div>
                 </div>
-                <div className="mt-2 text-sm group-hover:opacity-50 transition-opacity">
+                <div className="mt-3 text-sm group-hover:opacity-50 transition-opacity">
                   <div className="font-semibold line-clamp-2 tracking-wide">{b.displayTitle}</div>
-                  <div className="text-white/70">{b.author}</div>
+                  <div className="text-white/70 mt-1">{b.author}</div>
                 </div>
               </Link>
             </li>

@@ -39,8 +39,8 @@ export default function WhyUs() {
   return (
     <section aria-labelledby="why-us-heading" className="bg-brand-navy">
       <div className="mx-auto max-w-6xl px-6 py-14">
-        {/* Centered Title */}
-        <h2 id="why-us-heading" className="text-2xl md:text-3xl font-bold tracking-wide font-outfit text-center">{t('whyUs')}</h2>
+        {/* Centered Title - larger */}
+        <h2 id="why-us-heading" className="text-3xl md:text-4xl font-bold tracking-wide font-outfit text-center">{t('whyUs')}</h2>
         
         {/* Carousel for all screen sizes */}
         <div className="mt-10 relative">
@@ -79,7 +79,7 @@ export default function WhyUs() {
                 <h3 className="font-bold text-white font-outfit text-xl md:text-2xl lg:text-3xl">
                   {t(currentItem.titleKey)}
                 </h3>
-                <p className="text-white/80 text-sm md:text-base lg:text-lg mt-3 md:mt-4 leading-relaxed whitespace-pre-line max-w-lg line-clamp-5">
+                <p className="text-white/80 text-sm md:text-base lg:text-lg mt-3 md:mt-4 leading-relaxed whitespace-pre-line max-w-lg line-clamp-5 font-outfit">
                   {t(currentItem.descKey)}
                 </p>
               </div>

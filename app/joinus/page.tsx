@@ -19,11 +19,10 @@ function JoinUsContent() {
     }
   }, [searchParams]);
 
-  // Form background colors from poster themes with glass effect
-  // Taiwan AD-16: warm coral/orange tones, Netherlands AD-15: teal/green tones
+  // Form background colors - TW uses yellow/gold tones, NL uses pink tones (darker for form area)
   const formBgClass = activeLocation === 'TW' 
-    ? 'bg-[#d4735c]/30 backdrop-blur-xl border border-white/20 shadow-lg shadow-[#d4735c]/10' 
-    : 'bg-[#2a6b6b]/30 backdrop-blur-xl border border-white/20 shadow-lg shadow-[#2a6b6b]/10';
+    ? 'bg-gradient-to-br from-[#8B7355]/40 to-[#D4A574]/25 backdrop-blur-xl border border-[#FFDD57]/30 shadow-lg shadow-[#FFDD57]/10' 
+    : 'bg-gradient-to-br from-[#8B4B6B]/40 to-[#C48B9F]/25 backdrop-blur-xl border border-[#FFA6C3]/30 shadow-lg shadow-[#FFA6C3]/10';
 
   return (
     <section className="bg-brand-navy text-white min-h-screen">
@@ -64,24 +63,24 @@ function JoinUsContent() {
           </div>
         </div>
 
-        {/* Book Club Registration Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch">
-          {/* Left: Event Poster */}
-          <div className="flex">
-            <div className="relative w-full rounded-2xl overflow-hidden shadow-xl aspect-[3/4]">
+        {/* Book Club Registration Section - image height matches form, width follows 3:4 ratio */}
+        <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-10 items-stretch max-w-6xl mx-auto">
+          {/* Left: Event Poster - height matches form, width is height * 3/4 */}
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative h-auto lg:h-full aspect-[3/4] w-full max-w-[420px] lg:w-auto lg:max-w-none rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src={activeLocation === 'TW' ? '/images/elements/AD-16.png' : '/images/elements/AD-15.png'}
                 alt={activeLocation === 'TW' ? 'Taiwan Book Club' : 'Netherlands Book Club'}
                 fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                sizes="(max-width: 1024px) 420px, 50vw"
                 className="object-cover"
               />
             </div>
           </div>
 
           {/* Right: Signup Form */}
-          <div className="flex">
-            <div className={`w-full rounded-2xl p-6 lg:p-8 transition-colors duration-300 ${formBgClass}`}>
+          <div className="flex justify-center lg:justify-start">
+            <div className={`w-full max-w-[520px] rounded-2xl p-6 lg:p-8 transition-colors duration-300 ${formBgClass}`}>
               <SignupForm
                 key={activeLocation}
                 location={activeLocation}

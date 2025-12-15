@@ -7,6 +7,8 @@ type PageFlipProps = {
   autoPlay?: boolean;
   interval?: number;
   className?: string;
+  /** If set to a gif path, just render the gif instead of the flip animation */
+  gifSrc?: string;
 };
 
 export default function PageFlipAnimation({
@@ -21,7 +23,9 @@ export default function PageFlipAnimation({
   autoPlay = true,
   interval = 4000,
   className = '',
+  gifSrc,
 }: PageFlipProps) {
+  // All hooks must be called before any conditional returns
   const [currentPage, setCurrentPage] = useState(0);
   const [isFlipping, setIsFlipping] = useState(false);
   const [flipDirection, setFlipDirection] = useState<'next' | 'prev'>('next');
@@ -31,9 +35,6 @@ export default function PageFlipAnimation({
     typeof window !== 'undefined' &&
     window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-  // Check if we're on the cover (first page) or inside the book
-  const isOnCover = currentPage === 0;
-
   // Go to next page (loops back to first when at the end)
   const goNext = useCallback(() => {
     if (isFlipping) return;
@@ -42,7 +43,7 @@ export default function PageFlipAnimation({
     setTimeout(() => {
       setCurrentPage((prev) => (prev >= images.length - 1 ? 0 : prev + 1));
       setIsFlipping(false);
-    }, 700);
+    }, 600);
   }, [isFlipping, images.length]);
 
   // Go to previous page
@@ -53,29 +54,55 @@ export default function PageFlipAnimation({
     setTimeout(() => {
       setCurrentPage((prev) => prev - 1);
       setIsFlipping(false);
-    }, 700);
+    }, 600);
   }, [isFlipping, currentPage]);
 
-  // Auto-play (loop through pages)
+  // Auto-play
   useEffect(() => {
+    // Skip autoplay if using gif
+    if (gifSrc) return;
     if (!autoPlay || reduceMotion || images.length <= 1 || isHovered) return;
 
     const timer = setInterval(() => {
-      if (currentPage >= images.length - 1) {
-        // Reset to first page (cover)
-        setFlipDirection('prev');
-        setIsFlipping(true);
-        setTimeout(() => {
-          setCurrentPage(0);
-          setIsFlipping(false);
-        }, 700);
-      } else {
-        goNext();
-      }
+      goNext();
     }, interval);
 
     return () => clearInterval(timer);
-  }, [autoPlay, interval, images.length, reduceMotion, isHovered, currentPage, goNext]);
+  }, [autoPlay, interval, images.length, reduceMotion, isHovered, goNext, gifSrc]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    // Skip keyboard nav if using gif
+    if (gifSrc) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') goPrev();
+      if (e.key === 'ArrowRight') goNext();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [goNext, goPrev, gifSrc]);
+
+  // If a gif is provided, just render that
+  if (gifSrc) {
+    return (
+      <div className={`relative ${className}`}>
+        <div className="relative w-full max-w-2xl mx-auto" style={{ aspectRatio: '4/3', minHeight: '300px' }}>
+          <Image
+            src={gifSrc}
+            alt="Book flip animation"
+            fill
+            sizes="(max-width: 768px) 100vw, 448px"
+            className="object-contain"
+            unoptimized
+          />
+        </div>
+      </div>
+    );
+  }
+
+  const nextPage = (currentPage + 1) % images.length;
+  const prevPage = currentPage > 0 ? currentPage - 1 : 0;
 
   // Click handler
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -90,29 +117,6 @@ export default function PageFlipAnimation({
     }
   };
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') goPrev();
-      if (e.key === 'ArrowRight') goNext();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goNext, goPrev]);
-
-  // Determine which animation to use - all pages flip from center
-  const getFlipAnimation = () => {
-    if (flipDirection === 'next') {
-      return 'animate-flip-center-next';
-    }
-    return 'animate-flip-center-prev';
-  };
-
-  const getFlipOrigin = () => {
-    // All pages flip from center
-    return 'center center';
-  };
-
   return (
     <div
       ref={containerRef}
@@ -120,128 +124,84 @@ export default function PageFlipAnimation({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Book container */}
+      {/* Book container with realistic book look */}
       <div 
         className="relative w-full max-w-2xl mx-auto cursor-pointer group"
         style={{ 
           aspectRatio: '4/3',
           minHeight: '300px',
-          perspective: '1500px',
+          perspective: '2000px',
         }}
         onClick={handleClick}
         role="button"
         tabIndex={0}
         aria-label="Click to flip pages"
       >
-        {/* Book spine shadow - only visible when book is open (not on cover) */}
-        {!isOnCover && (
-          <div className="absolute left-1/2 top-0 bottom-0 w-6 -translate-x-1/2 bg-gradient-to-r from-black/20 via-black/30 to-black/20 z-20 pointer-events-none rounded-sm" />
-        )}
-        
-        {/* Pages stack effect */}
-        <div className="absolute inset-0 rounded-lg bg-white/5 transform translate-x-1 translate-y-1" />
-        <div className="absolute inset-0 rounded-lg bg-white/8 transform translate-x-0.5 translate-y-0.5" />
-
-        {/* Base layer - shows the destination page */}
-        <div className="absolute inset-0">
-          <Image
-            src={images[
-              isFlipping 
-                ? (flipDirection === 'next' 
-                    ? Math.min(currentPage + 1, images.length - 1) 
-                    : Math.max(currentPage - 1, 0))
-                : currentPage
-            ]}
-            alt={`Page ${currentPage + 1}`}
-            fill
-            sizes="(max-width: 768px) 100vw, 448px"
-            className="object-contain rounded-lg shadow-xl"
-          />
+        {/* Book outer frame / cover */}
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 shadow-2xl">
+          {/* Book spine in center */}
+          <div className="absolute left-1/2 top-2 bottom-2 w-4 -translate-x-1/2 bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 rounded-sm opacity-60" />
         </div>
 
-        {/* Flipping page animation */}
-        {isFlipping && (
-          <div
-            className={`absolute inset-0 ${getFlipAnimation()}`}
-            style={{
-              transformStyle: 'preserve-3d',
-              transformOrigin: getFlipOrigin(),
-            }}
-          >
-            {/* Front of flipping page */}
-            <div 
-              className="absolute inset-0"
-              style={{ backfaceVisibility: 'hidden' }}
-            >
-              <Image
-                src={images[currentPage]}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 448px"
-                className="object-contain rounded-lg shadow-2xl"
-              />
-              {/* Dynamic shadow based on flip type */}
-              <div className={`absolute inset-0 rounded-lg transition-opacity ${
-                isOnCover 
-                  ? 'bg-gradient-to-l from-transparent to-black/30' 
-                  : 'bg-gradient-to-r from-black/20 via-transparent to-black/20'
-              }`} />
-            </div>
-            
-            {/* Back of flipping page */}
-            <div 
-              className="absolute inset-0"
-              style={{ 
-                backfaceVisibility: 'hidden',
-                transform: 'rotateY(180deg)',
+        {/* Book inner pages area */}
+        <div className="absolute inset-3 rounded-lg overflow-hidden bg-gray-100 shadow-inner">
+          {/* Current page display (full spread) */}
+          <div className="absolute inset-0">
+            <Image
+              src={images[currentPage]}
+              alt={`Page ${currentPage + 1}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 448px"
+              className="object-contain"
+            />
+          </div>
+
+          {/* Center spine shadow overlay */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 bg-gradient-to-r from-transparent via-black/20 to-transparent z-10 pointer-events-none" />
+
+          {/* Flipping page animation (simplified cross-fade with subtle 3D hint) */}
+          {isFlipping && (
+            <div
+              className="absolute inset-0 z-20"
+              style={{
+                animation: flipDirection === 'next' ? 'page-turn-next 0.6s ease-in-out forwards' : 'page-turn-prev 0.6s ease-in-out forwards',
               }}
             >
               <Image
-                src={images[flipDirection === 'next' ? Math.min(currentPage + 1, images.length - 1) : Math.max(currentPage - 1, 0)]}
+                src={images[flipDirection === 'next' ? nextPage : prevPage]}
                 alt=""
                 fill
                 sizes="(max-width: 768px) 100vw, 448px"
-                className="object-contain rounded-lg shadow-2xl"
+                className="object-contain"
               />
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Hover hints */}
-        <div className="absolute inset-0 flex pointer-events-none">
-          {/* Left arrow hint */}
+        <div className="absolute inset-3 flex pointer-events-none z-30">
           <div className={`flex-1 flex items-center justify-start pl-4 transition-opacity duration-300 ${
             currentPage > 0 ? 'group-hover:opacity-100 opacity-0' : 'opacity-0'
           }`}>
-            <div className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </div>
           </div>
-          {/* Right arrow hint */}
-          <div className={`flex-1 flex items-center justify-end pr-4 transition-opacity duration-300 ${
-            currentPage < images.length - 1 ? 'group-hover:opacity-100 opacity-0' : 'opacity-0'
-          }`}>
-            <div className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex-1 flex items-center justify-end pr-4 transition-opacity duration-300 group-hover:opacity-100 opacity-0">
+            <div className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </div>
         </div>
-
-        {/* Page curl hint on cover */}
-        {isOnCover && !isFlipping && (
-          <div className="absolute bottom-4 right-4 w-12 h-12 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="w-full h-full bg-gradient-to-tl from-white/30 to-transparent rounded-tl-full animate-pulse" />
-          </div>
-        )}
       </div>
 
       {/* Navigation dots */}
       {images.length > 1 && (
-        <div className="flex justify-center gap-2 mt-2">
+        <div className="flex justify-center gap-2 mt-4">
           {images.map((_, idx) => (
             <button
               key={idx}
@@ -253,14 +213,14 @@ export default function PageFlipAnimation({
                 setTimeout(() => {
                   setCurrentPage(idx);
                   setIsFlipping(false);
-                }, 700);
+                }, 600);
               }}
               className={`h-2 rounded-full transition-all duration-300 ${
                 idx === currentPage
                   ? 'bg-brand-pink w-6'
                   : 'bg-white/30 hover:bg-white/50 w-2'
               }`}
-              aria-label={idx === 0 ? 'Go to cover' : `Go to page ${idx}`}
+              aria-label={`Go to page ${idx + 1}`}
               aria-current={idx === currentPage ? 'true' : 'false'}
             />
           ))}
@@ -268,70 +228,26 @@ export default function PageFlipAnimation({
       )}
 
       <style jsx>{`
-        /* Cover opens from left edge (like opening a book) */
-        @keyframes flip-cover-open {
+        @keyframes page-turn-next {
           0% {
-            transform: perspective(1500px) rotateY(0deg);
+            opacity: 0;
+            transform: translateX(20px) rotateY(-15deg);
           }
           100% {
-            transform: perspective(1500px) rotateY(-180deg);
+            opacity: 1;
+            transform: translateX(0) rotateY(0deg);
           }
         }
         
-        /* Cover closes back (going back to cover) */
-        @keyframes flip-cover-close {
+        @keyframes page-turn-prev {
           0% {
-            transform: perspective(1500px) rotateY(-180deg);
+            opacity: 0;
+            transform: translateX(-20px) rotateY(15deg);
           }
           100% {
-            transform: perspective(1500px) rotateY(0deg);
+            opacity: 1;
+            transform: translateX(0) rotateY(0deg);
           }
-        }
-        
-        /* Inside pages flip from center - next */
-        @keyframes flip-center-next {
-          0% {
-            transform: perspective(1500px) rotateY(0deg) scale(1);
-          }
-          50% {
-            transform: perspective(1500px) rotateY(-90deg) scale(1.05);
-          }
-          100% {
-            transform: perspective(1500px) rotateY(-180deg) scale(1);
-          }
-        }
-        
-        /* Inside pages flip from center - prev */
-        @keyframes flip-center-prev {
-          0% {
-            transform: perspective(1500px) rotateY(-180deg) scale(1);
-          }
-          50% {
-            transform: perspective(1500px) rotateY(-90deg) scale(1.05);
-          }
-          100% {
-            transform: perspective(1500px) rotateY(0deg) scale(1);
-          }
-        }
-        
-        .animate-flip-cover-open {
-          animation: flip-cover-open 0.7s ease-in-out forwards;
-          transform-origin: left center;
-        }
-        
-        .animate-flip-cover-close {
-          animation: flip-cover-close 0.7s ease-in-out forwards;
-          transform-origin: left center;
-        }
-        
-        .animate-flip-center-next {
-          animation: flip-center-next 0.7s ease-in-out forwards;
-          transform-origin: center center;
-        }
-        
-        .animate-flip-center-prev {
-          animation: flip-center-prev 0.7s ease-in-out forwards;
-          transform-origin: center center;
         }
       `}</style>
     </div>

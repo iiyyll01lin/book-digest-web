@@ -25,7 +25,7 @@ export default function HomeHero() {
                 {t('hero.title')}
                 <br /> {t('hero.titleLine2')}
               </h1>
-              <p className="mt-4 text-base md:text-lg text-white/90 max-w-2xl mx-auto md:mx-0 leading-relaxed">
+              <p className="mt-4 text-base md:text-lg text-white/90 max-w-2xl mx-auto md:mx-0 leading-relaxed font-outfit">
                 {t('hero.subtitle')}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-3">

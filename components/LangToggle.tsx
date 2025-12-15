@@ -7,7 +7,7 @@ export default function LangToggle() {
 
   return (
     <div
-      className="fixed top-0 right-2 md:right-4 z-50 h-[96px] flex items-center"
+      className="fixed top-2 right-2 md:right-4 z-50 flex items-start"
     >
       <div
         className="inline-flex rounded-full border border-white/20 p-0.5 bg-brand-navy/90 backdrop-blur text-[10px] md:text-xs"

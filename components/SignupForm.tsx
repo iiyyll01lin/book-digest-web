@@ -136,14 +136,29 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
     }
   };
 
+  // Different input colors for TW (yellow/gold tones) and NL (pink tones) - lighter for inputs
+  const inputBgColor = location === 'TW' 
+    ? 'bg-[#FFDD57]/15' 
+    : 'bg-[#FFA6C3]/15';
+
   const inputClass = (hasError: boolean) =>
-    `w-full rounded-lg bg-[#2a3f5f] px-4 py-3 text-white placeholder-white/40 outline-none border-0 focus:ring-2 focus:ring-brand-pink ${hasError ? 'ring-2 ring-red-400' : ''}`;
+    `w-full rounded-lg ${inputBgColor} px-4 py-3 text-white placeholder-white/50 outline-none backdrop-blur-sm focus:ring-2 focus:ring-brand-pink transition-colors ${hasError ? 'ring-2 ring-red-400' : ''}`;
+
+  // Location badge colors
+  const locationBadgeClass = location === 'TW'
+    ? 'bg-[#FFDD57] text-brand-navy'
+    : 'bg-brand-pink text-brand-navy';
 
   return (
     <div>
-      <h3 className="text-lg font-semibold text-white mb-6">
-        Sign up — {location === 'TW' ? tEvents('taiwan') : tEvents('netherlands')}
-      </h3>
+      <div className="flex items-center gap-3 mb-6">
+        <h3 className="text-lg font-semibold text-white">
+          Sign up
+        </h3>
+        <span className={`px-4 py-1.5 rounded-full text-sm font-bold ${locationBadgeClass}`}>
+          📍 {location === 'TW' ? tEvents('taiwan') : tEvents('netherlands')}
+        </span>
+      </div>
 
       {success === 'ok' ? (
         <div className="rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-200 p-4" role="status">
@@ -155,96 +170,111 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
         </div>
       ) : null}
 
-      <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+      <form className="space-y-5" onSubmit={handleSubmit} noValidate>
         {/* Honeypot */}
         <input type="text" name="website" value={values.website} onChange={onChange} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
-        {/* First & Last Name */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-white mb-2">{t('firstName')}</label>
-            <input
-              id="firstName" name="firstName" value={values.firstName} onChange={onChange}
-              className={inputClass(!!errors.firstName)}
-              autoComplete="given-name"
-            />
-            {errors.firstName && <p className="mt-1 text-xs text-red-300">{errors.firstName}</p>}
+        {/* Section: Personal Info */}
+        <div className="bg-white/5 rounded-xl p-4 space-y-4">
+          <p className="text-xs font-medium text-white/60 uppercase tracking-wider mb-3">👤 {t('personalInfo') || 'Personal Information'}</p>
+          
+          {/* First & Last Name */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-white mb-2">{t('firstName')}</label>
+              <input
+                id="firstName" name="firstName" value={values.firstName} onChange={onChange}
+                className={inputClass(!!errors.firstName)}
+                autoComplete="given-name"
+              />
+              {errors.firstName && <p className="mt-1 text-xs text-red-300">{errors.firstName}</p>}
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-white mb-2">{t('lastName')}</label>
+              <input
+                id="lastName" name="lastName" value={values.lastName} onChange={onChange}
+                className={inputClass(!!errors.lastName)}
+                autoComplete="family-name"
+              />
+              {errors.lastName && <p className="mt-1 text-xs text-red-300">{errors.lastName}</p>}
+            </div>
           </div>
-          <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-white mb-2">{t('lastName')}</label>
-            <input
-              id="lastName" name="lastName" value={values.lastName} onChange={onChange}
-              className={inputClass(!!errors.lastName)}
-              autoComplete="family-name"
-            />
-            {errors.lastName && <p className="mt-1 text-xs text-red-300">{errors.lastName}</p>}
+
+          {/* Age & Profession */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="age" className="block text-sm font-medium text-white mb-2">{t('age')}</label>
+              <input
+                id="age" name="age" inputMode="numeric" pattern="[0-9]*" value={values.age} onChange={onChange}
+                className={inputClass(!!errors.age)}
+              />
+              <p className="mt-1 text-xs text-white/50">13–120</p>
+              {errors.age && <p className="text-xs text-red-300">{errors.age}</p>}
+            </div>
+            <div>
+              <label htmlFor="profession" className="block text-sm font-medium text-white mb-2">{t('profession')}</label>
+              <input
+                id="profession" name="profession" value={values.profession} onChange={onChange}
+                className={inputClass(!!errors.profession)}
+              />
+              {errors.profession && <p className="mt-1 text-xs text-red-300">{errors.profession}</p>}
+            </div>
           </div>
         </div>
 
-        {/* Age & Profession */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="age" className="block text-sm font-medium text-white mb-2">{t('age')}</label>
-            <input
-              id="age" name="age" inputMode="numeric" pattern="[0-9]*" value={values.age} onChange={onChange}
-              className={inputClass(!!errors.age)}
-            />
-            <p className="mt-1 text-xs text-white/50">13–120</p>
-            {errors.age && <p className="text-xs text-red-300">{errors.age}</p>}
-          </div>
-          <div>
-            <label htmlFor="profession" className="block text-sm font-medium text-white mb-2">{t('profession')}</label>
-            <input
-              id="profession" name="profession" value={values.profession} onChange={onChange}
-              className={inputClass(!!errors.profession)}
-            />
-            {errors.profession && <p className="mt-1 text-xs text-red-300">{errors.profession}</p>}
-          </div>
-        </div>
-
-        {/* Email & Instagram */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-white mb-2">{t('email')}</label>
-            <input
-              id="email" name="email" type="email" value={values.email} onChange={onChange}
-              className={inputClass(!!errors.email)}
-              autoComplete="email"
-            />
-            {errors.email && <p className="mt-1 text-xs text-red-300">{errors.email}</p>}
-          </div>
-          <div>
-            <label htmlFor="instagram" className="block text-sm font-medium text-white mb-2">{t('instagram')}</label>
-            <input
-              id="instagram" name="instagram" value={values.instagram} onChange={onChange}
-              className={inputClass(false)}
-            />
+        {/* Section: Contact Info */}
+        <div className="bg-white/5 rounded-xl p-4 space-y-4">
+          <p className="text-xs font-medium text-white/60 uppercase tracking-wider mb-3">📧 {t('contactInfo') || 'Contact Information'}</p>
+          
+          {/* Email & Instagram */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-white mb-2">{t('email')}</label>
+              <input
+                id="email" name="email" type="email" value={values.email} onChange={onChange}
+                className={inputClass(!!errors.email)}
+                autoComplete="email"
+              />
+              {errors.email && <p className="mt-1 text-xs text-red-300">{errors.email}</p>}
+            </div>
+            <div>
+              <label htmlFor="instagram" className="block text-sm font-medium text-white mb-2">{t('instagram')}</label>
+              <input
+                id="instagram" name="instagram" value={values.instagram} onChange={onChange}
+                className={inputClass(false)}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Referral */}
-        <div>
-          <label htmlFor="referral" className="block text-sm font-medium text-white mb-2">{t('referral')}</label>
-          <select
-            id="referral" name="referral" value={values.referral} onChange={onChange}
-            className={`${inputClass(false)} appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22white%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:1.25rem]`}
-          >
-            <option value="Instagram">Instagram</option>
-            <option value="Facebook">Facebook</option>
-            <option value="Others">Others</option>
-          </select>
-        </div>
-
-        {values.referral === 'Others' && (
+        {/* Section: How did you hear about us */}
+        <div className="bg-white/5 rounded-xl p-4 space-y-4">
+          <p className="text-xs font-medium text-white/60 uppercase tracking-wider mb-3">🔍 {t('referralSection') || 'How did you find us?'}</p>
+          
+          {/* Referral */}
           <div>
-            <label htmlFor="referralOther" className="block text-sm font-medium text-white mb-2">{t('referralOther')}</label>
-            <input
-              id="referralOther" name="referralOther" value={values.referralOther} onChange={onChange}
-              className={inputClass(!!errors.referralOther)}
-            />
-            {errors.referralOther && <p className="mt-1 text-xs text-red-300">{errors.referralOther}</p>}
+            <label htmlFor="referral" className="block text-sm font-medium text-white mb-2">{t('referral')}</label>
+            <select
+              id="referral" name="referral" value={values.referral} onChange={onChange}
+              className={`${inputClass(false)} appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22white%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:1.25rem]`}
+            >
+              <option value="Instagram">Instagram</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Others">Others</option>
+            </select>
           </div>
-        )}
+
+          {values.referral === 'Others' && (
+            <div>
+              <label htmlFor="referralOther" className="block text-sm font-medium text-white mb-2">{t('referralOther')}</label>
+              <input
+                id="referralOther" name="referralOther" value={values.referralOther} onChange={onChange}
+                className={inputClass(!!errors.referralOther)}
+              />
+              {errors.referralOther && <p className="mt-1 text-xs text-red-300">{errors.referralOther}</p>}
+            </div>
+          )}
+        </div>
 
         {/* Consent */}
         <div className="flex items-start gap-3 pt-2">

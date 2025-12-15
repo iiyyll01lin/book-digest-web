@@ -14,9 +14,9 @@ export default function BookArticleSidebar({
 }: SidebarProps) {
   const t = useTranslations('sidebar');
   return (
-    <aside className="space-y-8" aria-label="Sidebar">
-      {/* Podcast Section */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
+    <aside className="space-y-5" aria-label="Sidebar">
+      {/* Podcast Section - Pink theme with frosted glass */}
+      <div className="rounded-2xl bg-brand-pink/50 backdrop-blur-sm p-5 shadow-md ring-1 ring-brand-pink/40">
         <h3 className="text-lg font-bold text-gray-900">🎙️ {t('podcast')}</h3>
         <p className="mt-2 text-sm text-gray-600">
           {t('podcastDesc')}
@@ -25,7 +25,7 @@ export default function BookArticleSidebar({
           href={podcastUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 inline-flex items-center gap-2 rounded-full bg-brand-navy px-4 py-2 text-sm font-semibold text-white hover:bg-brand-blue transition-colors"
+          className="mt-3 inline-flex items-center gap-2 rounded-full bg-brand-pink px-4 py-2 text-sm font-semibold text-brand-navy hover:brightness-110 transition-all"
         >
           <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
@@ -34,9 +34,9 @@ export default function BookArticleSidebar({
         </a>
       </div>
 
-      {/* Related Articles */}
+      {/* Related Articles - Blue theme with frosted glass */}
       {articles.length > 0 && (
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
+        <div className="rounded-2xl bg-brand-blue/20 backdrop-blur-sm p-5 shadow-md ring-1 ring-brand-blue/30">
           <h3 className="text-lg font-bold text-gray-900">📚 {t('moreBooks')}</h3>
           <ul className="mt-3 space-y-2">
             {articles.slice(0, 5).map((article) => (
@@ -59,8 +59,8 @@ export default function BookArticleSidebar({
         </div>
       )}
 
-      {/* Social Links */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
+      {/* Social Links - Yellow theme with frosted glass */}
+      <div className="rounded-2xl bg-brand-yellow/30 backdrop-blur-sm p-5 shadow-md ring-1 ring-brand-yellow/50">
         <h3 className="text-lg font-bold text-gray-900">🔗 {t('followUs')}</h3>
         <div className="mt-3 flex gap-3">
           <a

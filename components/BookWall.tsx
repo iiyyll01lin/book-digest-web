@@ -25,11 +25,11 @@ export default async function BookWall() {
           <Link href="/books" className="text-sm font-semibold text-brand-pink hover:underline">{t('viewAll')}</Link>
         </div>
 
-        <ul className="mt-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 md:gap-4">
+        <ul className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 md:gap-6">
           {sortedBooks.map((book) => (
             <li key={book.id} className="group">
               <Link href={`/books/${book.slug}`} className="block">
-                <div className="relative aspect-[7/10] overflow-hidden rounded-xl md:rounded-2xl bg-white shadow ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-[1.03]">
+                <div className="relative aspect-[7/10] overflow-hidden rounded-md bg-white shadow ring-1 ring-black/5 transition-transform duration-300 group-hover:scale-[1.03]">
                   <Image
                     src={book.coverUrl || '/images/placeholder-cover.svg'}
                     alt={book.title}

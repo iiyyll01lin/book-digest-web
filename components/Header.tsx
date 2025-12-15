@@ -31,8 +31,8 @@ export default function Header() {
     }`;
 
   return (
-    <header className="bg-brand-navy/95 backdrop-blur supports-[backdrop-filter]:bg-brand-navy/80 sticky top-0 z-40 border-b border-white/10">
-      <div className="mx-auto max-w-6xl px-6 h-[96px] relative">
+    <header className="bg-brand-navy/95 backdrop-blur supports-[backdrop-filter]:bg-brand-navy/80 sticky top-0 z-40 border-b border-white/10 pt-3">
+      <div className="mx-auto max-w-6xl px-6 h-[88px] relative">
         {/* Desktop/tablet: grid layout with equal width nav items */}
         <div className="hidden md:grid grid-cols-5 items-center h-full pr-24">
           <Link href="/books" className={linkClass('/books')}>{t('books')}</Link>
