@@ -60,7 +60,7 @@ export default function Counter({ target, label }: { target: number; label: stri
       <div className="text-sm text-white/70 font-outfit uppercase tracking-wider">
         {label}
       </div>
-      <div className="text-5xl md:text-6xl font-bold tabular-nums font-outfit mt-1">
+      <div className="text-7xl md:text-8xl font-extralight tabular-nums font-outfit mt-1">
         {value.toLocaleString()}
       </div>
     </div>

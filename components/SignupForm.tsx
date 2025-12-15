@@ -269,7 +269,7 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
               <label htmlFor="referralOther" className="block text-sm font-medium text-white mb-2">{t('referralOther')}</label>
               <input
                 id="referralOther" name="referralOther" value={values.referralOther} onChange={onChange}
-                className={inputClass(!!errors.referralOther)}
+                className={`w-full ${inputClass(!!errors.referralOther)}`}
               />
               {errors.referralOther && <p className="mt-1 text-xs text-red-300">{errors.referralOther}</p>}
             </div>

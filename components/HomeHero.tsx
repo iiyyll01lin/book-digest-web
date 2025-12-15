@@ -27,7 +27,7 @@ export default function HomeHero() {
         <div className="relative mx-auto max-w-6xl px-6 pt-18 pb-18 lg:pt-22 lg:pb-22">
           <div className="grid items-center gap-8 lg:gap-12 md:grid-cols-2 text-center md:text-left">
             <div>
-              <h1 className="mt-6 text-[2.5rem] md:text-[3rem] font-bold text-white font-display leading-[1.2] tracking-[0.01em]">
+              <h1 className="mt-6 text-[2.5rem] md:text-[3rem] font-bold text-white font-display leading-[1.2] tracking-[0.01em] whitespace-pre-line">
                 {t('hero.title')}
                 <br /> {t('hero.titleLine2')}
               </h1>
@@ -40,16 +40,9 @@ export default function HomeHero() {
               </div>
             </div>
             {/* Page Flip Animation - enlarged for better visibility */}
-            <div className="mt-10 md:mt-0 min-h-[400px] md:min-h-[480px]">
+            <div className="mt-10 md:mt-0">
               <PageFlipAnimation
-                images={[
-                  '/images/notebook/notebook-03.png',
-                  '/images/notebook/notebook-04.png',
-                  '/images/notebook/notebook-05.png',
-                  '/images/notebook/notebook-06.png',
-                ]}
-                autoPlay={true}
-                interval={4000}
+                gifSrc="/images/notebook/notebook.gif"
                 className="w-full max-w-3xl mx-auto md:ml-auto md:mr-0"
               />
             </div>
