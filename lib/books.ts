@@ -29,6 +29,14 @@ const sortedBooksByDate = [...books].sort((a, b) => {
   return new Date(b.readDate).getTime() - new Date(a.readDate).getTime();
 });
 
+// Pre-sorted books list by cover number (largest first)
+const sortedBooksByNumber = [...books]
+  .map(b => ({
+    ...b,
+    coverNumber: b.coverUrl ? parseInt(b.coverUrl.match(/\/(\d+)_/)?.[1] || '0', 10) : 0,
+  }))
+  .sort((a, b) => b.coverNumber - a.coverNumber);
+
 // ============================================
 // Public API
 // ============================================
@@ -71,6 +79,11 @@ export async function getRecentBooks(limit: number = 40): Promise<Book[]> {
 // Sync version
 export function getRecentBooksSync(limit: number = 40): Book[] {
   return sortedBooksByDate.slice(0, limit);
+}
+
+// Get top books by cover number (largest numbers first)
+export function getTopBooksByNumberSync(limit: number = 30): Book[] {
+  return sortedBooksByNumber.slice(0, limit);
 }
 
 // ============================================

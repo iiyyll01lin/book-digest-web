@@ -16,8 +16,8 @@ export default function BookArticleSidebar({
   const t = useTranslations('sidebar');
   return (
     <aside className="space-y-5" aria-label="Sidebar">
-      {/* Podcast Section - Pink theme with frosted glass */}
-      <div className="rounded-2xl bg-brand-pink/50 backdrop-blur-sm p-5 shadow-md ring-1 ring-brand-pink/40">
+      {/* Podcast Section */}
+      <div className="rounded-2xl bg-gray-50 p-5 shadow-sm">
         <h3 className="text-lg font-bold text-gray-900">🎙️ {t('podcast')}</h3>
         <p className="mt-2 text-sm text-gray-600">
           {t('podcastDesc')}
@@ -35,9 +35,9 @@ export default function BookArticleSidebar({
         </a>
       </div>
 
-      {/* Related Articles - Blue theme with frosted glass */}
+      {/* Related Articles */}
       {articles.length > 0 && (
-        <div className="rounded-2xl bg-brand-blue/20 backdrop-blur-sm p-5 shadow-md ring-1 ring-brand-blue/30">
+        <div className="rounded-2xl bg-gray-50 p-5 shadow-sm">
           <h3 className="text-lg font-bold text-gray-900">📚 {t('moreBooks')}</h3>
           <ul className="mt-3 space-y-2">
             {articles.slice(0, 5).map((article) => (
@@ -61,8 +61,8 @@ export default function BookArticleSidebar({
         </div>
       )}
 
-      {/* Social Links - Yellow theme with frosted glass */}
-      <div className="rounded-2xl bg-brand-yellow/30 backdrop-blur-sm p-5 shadow-md ring-1 ring-brand-yellow/50">
+      {/* Social Links */}
+      <div className="rounded-2xl bg-gray-50 p-5 shadow-sm">
         <h3 className="text-lg font-bold text-gray-900">🔗 {t('followUs')}</h3>
         <div className="mt-3 flex gap-3">
           <a

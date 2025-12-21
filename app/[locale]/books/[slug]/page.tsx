@@ -85,7 +85,7 @@ export default async function BookArticlePage({ params }: { params: Promise<{ sl
     }));
 
   return (
-    <article className="bg-gradient-to-b from-white to-gray-50/50 min-h-screen">
+    <article className="bg-white min-h-screen">
       {/* Hero Section */}
       <header className="relative bg-gradient-to-b from-brand-navy to-brand-blue">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-12 pb-24 md:pt-16 md:pb-32">
@@ -155,22 +155,22 @@ export default async function BookArticlePage({ params }: { params: Promise<{ sl
         </div>
       </header>
 
-      {/* Main Content - with frosted glass card effect */}
+      {/* Main Content - clean white background */}
       <div className="mx-auto max-w-6xl py-12 px-4 sm:px-6">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 p-6 md:p-10">
+        <div className="bg-white rounded-2xl p-6 md:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Article Content */}
             <main className="lg:col-span-2 space-y-8">
-              {/* Summary Section - Pink theme */}
-              <section className="bg-brand-pink/25 rounded-xl p-6 border-l-4 border-brand-pink">
+              {/* Summary Section */}
+              <section className="bg-gray-50 rounded-xl p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">📖 {t('summary')}</h2>
                 <p className="text-gray-700 leading-relaxed text-lg">
                   {book.displaySummary || (locale === 'en' ? 'This book offers profound insights and inspiration...' : '這本書帶給我們許多深刻的思考與啟發...')}
                 </p>
               </section>
 
-              {/* Reading Notes Placeholder - Yellow theme */}
-              <section className="bg-brand-yellow/15 rounded-xl p-6 border-l-4 border-brand-yellow">
+              {/* Reading Notes Placeholder */}
+              <section className="bg-gray-50 rounded-xl p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">✍️ {t('readingNotes')}</h2>
                 <p className="text-gray-600 italic">
                   {t('notesComingSoon')}
@@ -187,13 +187,13 @@ export default async function BookArticlePage({ params }: { params: Promise<{ sl
                 </Link>
               </section>
 
-              {/* Discussion Points - Blue theme */}
-              <section className="bg-brand-blue/10 rounded-xl p-6 border-l-4 border-brand-blue">
+              {/* Discussion Points */}
+              <section className="bg-gray-50 rounded-xl p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">💬 {t('discussionPoints')}</h2>
                 <ul className="space-y-3">
                   {([1, 2, 3] as const).map((num) => (
                     <li key={num} className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-blue/20 text-brand-navy flex items-center justify-center text-sm font-bold">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-pink/30 text-brand-navy flex items-center justify-center text-sm font-bold">
                         {num}
                       </span>
                       <span className="text-gray-700">{t(`question${num}`)}</span>
@@ -202,9 +202,9 @@ export default async function BookArticlePage({ params }: { params: Promise<{ sl
                 </ul>
               </section>
 
-              {/* External Links - Navy theme */}
+              {/* External Links */}
               {book.links && (
-                <section className="bg-brand-navy/5 rounded-xl p-6 border-l-4 border-brand-navy">
+                <section className="bg-gray-50 rounded-xl p-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">🔗 {t('relatedLinks')}</h2>
                   <div className="flex flex-wrap gap-3">
                     {book.links.publisher && (

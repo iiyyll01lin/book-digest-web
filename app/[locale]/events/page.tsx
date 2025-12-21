@@ -30,7 +30,7 @@ function EventSection({
 }) {
   const imageBlock = (
     <div className="w-full lg:w-1/2">
-      <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[3/4]">
+      <div className="relative rounded-2xl overflow-hidden shadow-xl" style={{ aspectRatio: '750/570' }}>
         <Image
           src={image}
           alt={title}
@@ -93,7 +93,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
     <section className="bg-brand-navy text-white min-h-screen">
       <div className="mx-auto max-w-6xl px-6 py-16">
         {/* Stats Counters - Client Component for animation */}
-        <div className="grid grid-cols-3 gap-4 md:gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8 mb-16">
           <Counter target={stats.readingDays} label={t('readingDays')} />
           <Counter target={stats.clubsHeld} label={t('clubsHeld')} />
           <Counter target={stats.readersJoined} label={t('readersJoined')} />

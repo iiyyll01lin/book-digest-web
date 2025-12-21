@@ -12,8 +12,7 @@ export type SignupFormProps = {
 
 // Move schema to module level for better performance (only created once)
 const baseSchema = z.object({
-  firstName: z.string().min(1, 'First name is required').max(100),
-  lastName: z.string().min(1, 'Last name is required').max(100),
+  name: z.string().min(1, 'Name is required').max(100),
   age: z
     .string()
     .transform((v) => (v.trim() === '' ? NaN : Number(v)))
@@ -28,9 +27,6 @@ const baseSchema = z.object({
   instagram: z.string().optional(),
   referral: z.enum(['Instagram', 'Facebook', 'Others']),
   referralOther: z.string().optional(),
-  consent: z.literal(true, {
-    errorMap: () => ({ message: 'You must accept the consent to proceed' }),
-  }),
   website: z.string().optional(),
 });
 
@@ -54,15 +50,13 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
   const [success, setSuccess] = useState<null | 'ok' | 'error'>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [values, setValues] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     age: '',
     profession: '',
     email: '',
     instagram: '',
     referral: 'Instagram' as 'Instagram' | 'Facebook' | 'Others',
     referralOther: '',
-    consent: false,
     website: '',
   });
 
@@ -96,7 +90,7 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
       setSuccess('ok');
       setSubmitting(false);
       setValues({
-        firstName: '', lastName: '', age: '', profession: '', email: '', instagram: '', referral: 'Instagram', referralOther: '', consent: false, website: ''
+        name: '', age: '', profession: '', email: '', instagram: '', referral: 'Instagram', referralOther: '', website: ''
       });
       return;
     }
@@ -108,15 +102,13 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             location,
-            firstName: values.firstName,
-            lastName: values.lastName,
+            name: values.name,
             age: Number(values.age),
             profession: values.profession,
             email: values.email,
             instagram: values.instagram || undefined,
             referral: values.referral,
             referralOther: values.referral === 'Others' ? values.referralOther : undefined,
-            consent: values.consent,
             timestamp: new Date().toISOString(),
           }),
         });
@@ -127,7 +119,7 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
 
       setSuccess('ok');
       setValues({
-        firstName: '', lastName: '', age: '', profession: '', email: '', instagram: '', referral: 'Instagram', referralOther: '', consent: false, website: ''
+        name: '', age: '', profession: '', email: '', instagram: '', referral: 'Instagram', referralOther: '', website: ''
       });
     } catch {
       setSuccess('error');
@@ -136,13 +128,9 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
     }
   };
 
-  // Different input colors for TW (yellow/gold tones) and NL (pink tones) - lighter for inputs
-  const inputBgColor = location === 'TW' 
-    ? 'bg-[#FFDD57]/15' 
-    : 'bg-[#FFA6C3]/15';
-
+  // Unified white input style
   const inputClass = (hasError: boolean) =>
-    `w-full rounded-lg ${inputBgColor} px-4 py-3 text-white placeholder-white/50 outline-none backdrop-blur-sm focus:ring-2 focus:ring-brand-pink transition-colors ${hasError ? 'ring-2 ring-red-400' : ''}`;
+    `w-full rounded-lg bg-white px-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-brand-pink transition-colors ${hasError ? 'ring-2 ring-red-400' : ''}`;
 
   // Location badge colors
   const locationBadgeClass = location === 'TW'
@@ -174,119 +162,83 @@ export default function SignupForm({ location, endpoint }: SignupFormProps) {
         {/* Honeypot */}
         <input type="text" name="website" value={values.website} onChange={onChange} className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
-        {/* Section: Personal Info */}
-        <div className="bg-white/5 rounded-xl p-4 space-y-4">
-          <p className="text-xs font-medium text-white/60 uppercase tracking-wider mb-3">👤 {t('personalInfo') || 'Personal Information'}</p>
-          
-          {/* First & Last Name */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-white mb-2">{t('firstName')}</label>
-              <input
-                id="firstName" name="firstName" value={values.firstName} onChange={onChange}
-                className={inputClass(!!errors.firstName)}
-                autoComplete="given-name"
-              />
-              {errors.firstName && <p className="mt-1 text-xs text-red-300">{errors.firstName}</p>}
-            </div>
-            <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-white mb-2">{t('lastName')}</label>
-              <input
-                id="lastName" name="lastName" value={values.lastName} onChange={onChange}
-                className={inputClass(!!errors.lastName)}
-                autoComplete="family-name"
-              />
-              {errors.lastName && <p className="mt-1 text-xs text-red-300">{errors.lastName}</p>}
-            </div>
-          </div>
-
-          {/* Age & Profession */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="age" className="block text-sm font-medium text-white mb-2">{t('age')}</label>
-              <input
-                id="age" name="age" inputMode="numeric" pattern="[0-9]*" value={values.age} onChange={onChange}
-                className={inputClass(!!errors.age)}
-              />
-              <p className="mt-1 text-xs text-white/50">13–120</p>
-              {errors.age && <p className="text-xs text-red-300">{errors.age}</p>}
-            </div>
-            <div>
-              <label htmlFor="profession" className="block text-sm font-medium text-white mb-2">{t('profession')}</label>
-              <input
-                id="profession" name="profession" value={values.profession} onChange={onChange}
-                className={inputClass(!!errors.profession)}
-              />
-              {errors.profession && <p className="mt-1 text-xs text-red-300">{errors.profession}</p>}
-            </div>
-          </div>
-        </div>
-
-        {/* Section: Contact Info */}
-        <div className="bg-white/5 rounded-xl p-4 space-y-4">
-          <p className="text-xs font-medium text-white/60 uppercase tracking-wider mb-3">📧 {t('contactInfo') || 'Contact Information'}</p>
-          
-          {/* Email & Instagram */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-white mb-2">{t('email')}</label>
-              <input
-                id="email" name="email" type="email" value={values.email} onChange={onChange}
-                className={inputClass(!!errors.email)}
-                autoComplete="email"
-              />
-              {errors.email && <p className="mt-1 text-xs text-red-300">{errors.email}</p>}
-            </div>
-            <div>
-              <label htmlFor="instagram" className="block text-sm font-medium text-white mb-2">{t('instagram')}</label>
-              <input
-                id="instagram" name="instagram" value={values.instagram} onChange={onChange}
-                className={inputClass(false)}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Section: How did you hear about us */}
-        <div className="bg-white/5 rounded-xl p-4 space-y-4">
-          <p className="text-xs font-medium text-white/60 uppercase tracking-wider mb-3">🔍 {t('referralSection') || 'How did you find us?'}</p>
-          
-          {/* Referral */}
-          <div>
-            <label htmlFor="referral" className="block text-sm font-medium text-white mb-2">{t('referral')}</label>
-            <select
-              id="referral" name="referral" value={values.referral} onChange={onChange}
-              className={`${inputClass(false)} appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22white%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:1.25rem]`}
-            >
-              <option value="Instagram">Instagram</option>
-              <option value="Facebook">Facebook</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
-
-          {values.referral === 'Others' && (
-            <div>
-              <label htmlFor="referralOther" className="block text-sm font-medium text-white mb-2">{t('referralOther')}</label>
-              <input
-                id="referralOther" name="referralOther" value={values.referralOther} onChange={onChange}
-                className={`w-full ${inputClass(!!errors.referralOther)}`}
-              />
-              {errors.referralOther && <p className="mt-1 text-xs text-red-300">{errors.referralOther}</p>}
-            </div>
-          )}
-        </div>
-
-        {/* Consent */}
-        <div className="flex items-start gap-3 pt-2">
+        {/* Name */}
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-white mb-2">{t('nameLabel')}</label>
           <input
-            id="consent" name="consent" type="checkbox" checked={values.consent} onChange={onChange}
-            className="mt-1 h-4 w-4 rounded border-white/30 bg-white/10 text-brand-pink focus:ring-brand-pink"
+            id="name" name="name" value={values.name} onChange={onChange}
+            className={inputClass(!!errors.name)}
+            autoComplete="name"
           />
-          <label htmlFor="consent" className="text-sm text-white/80 leading-relaxed">
-            I agree to receive occasional emails related to Book Digest events and confirm I am 13 years or older.
-          </label>
+          {errors.name && <p className="mt-1 text-xs text-red-300">{errors.name}</p>}
         </div>
-        {errors.consent && <p className="text-xs text-red-300">{errors.consent}</p>}
+
+        {/* Age */}
+        <div>
+          <label htmlFor="age" className="block text-sm font-medium text-white mb-2">{t('ageLabel')}</label>
+          <input
+            id="age" name="age" inputMode="numeric" pattern="[0-9]*" value={values.age} onChange={onChange}
+            className={inputClass(!!errors.age)}
+          />
+          {errors.age && <p className="mt-1 text-xs text-red-300">{errors.age}</p>}
+        </div>
+
+        {/* Profession */}
+        <div>
+          <label htmlFor="profession" className="block text-sm font-medium text-white mb-2">{t('professionLabel')}</label>
+          <input
+            id="profession" name="profession" value={values.profession} onChange={onChange}
+            className={inputClass(!!errors.profession)}
+          />
+          {errors.profession && <p className="mt-1 text-xs text-red-300">{errors.profession}</p>}
+        </div>
+
+        {/* Email */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-white mb-2">{t('emailLabel')}</label>
+          <input
+            id="email" name="email" type="email" value={values.email} onChange={onChange}
+            className={inputClass(!!errors.email)}
+            autoComplete="email"
+          />
+          {errors.email && <p className="mt-1 text-xs text-red-300">{errors.email}</p>}
+        </div>
+
+        {/* Instagram */}
+        <div>
+          <label htmlFor="instagram" className="block text-sm font-medium text-white mb-2">{t('instagramLabel')}</label>
+          <input
+            id="instagram" name="instagram" value={values.instagram} onChange={onChange}
+            className={inputClass(false)}
+            placeholder="bookdigest_tw"
+          />
+        </div>
+
+        {/* Referral */}
+        <div>
+          <label htmlFor="referral" className="block text-sm font-medium text-white mb-2">{t('referralLabel')}</label>
+          <select
+            id="referral" name="referral" value={values.referral} onChange={onChange}
+            className={`${inputClass(false)} appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22%23666%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center] bg-[length:1.25rem]`}
+          >
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Others">{t('referralOthers')}</option>
+          </select>
+        </div>
+
+        {/* Reserve space for referralOther to prevent layout shift */}
+        <div className={`transition-all duration-200 overflow-hidden ${values.referral === 'Others' ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'}`}>
+          <div>
+            <label htmlFor="referralOther" className="block text-sm font-medium text-white mb-2">{t('referralOtherLabel')}</label>
+            <input
+              id="referralOther" name="referralOther" value={values.referralOther} onChange={onChange}
+              className={inputClass(!!errors.referralOther)}
+              placeholder={t('referralOtherPlaceholder')}
+            />
+            {errors.referralOther && <p className="mt-1 text-xs text-red-300">{errors.referralOther}</p>}
+          </div>
+        </div>
 
         {/* Submit */}
         <div className="pt-4">

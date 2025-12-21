@@ -17,9 +17,9 @@ export default function HomeHero() {
   
   return (
     <>
-      <section className="relative bg-brand-navy overflow-hidden">
+      <section className="relative bg-brand-navy">
         {/* Decorative background elements (large screens) */}
-        <div aria-hidden="true" className="pointer-events-none hidden lg:block absolute inset-0">
+        <div aria-hidden="true" className="pointer-events-none hidden lg:block absolute inset-0 overflow-hidden">
           <div className="absolute -top-20 -right-24 h-64 w-64 rounded-full bg-white/5 blur-2xl" />
           <div className="absolute bottom-0 -left-20 h-80 w-80 rounded-full bg-brand-pink/10 blur-3xl" />
         </div>

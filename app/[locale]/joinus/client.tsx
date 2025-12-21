@@ -20,10 +20,8 @@ function JoinUsContent() {
     }
   }, [searchParams]);
 
-  // Form background colors - TW uses yellow/gold tones, NL uses pink tones (darker for form area)
-  const formBgClass = activeLocation === 'TW' 
-    ? 'bg-gradient-to-br from-[#8B7355]/40 to-[#D4A574]/25 backdrop-blur-xl border border-[#FFDD57]/30 shadow-lg shadow-[#FFDD57]/10' 
-    : 'bg-gradient-to-br from-[#8B4B6B]/40 to-[#C48B9F]/25 backdrop-blur-xl border border-[#FFA6C3]/30 shadow-lg shadow-[#FFA6C3]/10';
+  // Form background colors - unified white background with 20% opacity
+  const formBgClass = 'bg-white/20 backdrop-blur-xl rounded-2xl';
 
   return (
     <section className="bg-brand-navy text-white min-h-screen">
@@ -64,11 +62,11 @@ function JoinUsContent() {
           </div>
         </div>
 
-        {/* Book Club Registration Section - image height matches form, width follows 3:4 ratio */}
+        {/* Book Club Registration Section */}
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 lg:gap-10 items-stretch max-w-6xl mx-auto">
-          {/* Left: Event Poster - height matches form, width is height * 3/4 */}
+          {/* Left: Event Poster - 750x570 aspect ratio */}
           <div className="flex justify-center lg:justify-end">
-            <div className="relative h-auto lg:h-full aspect-[3/4] w-full max-w-[420px] lg:w-auto lg:max-w-none rounded-2xl overflow-hidden shadow-xl">
+            <div className="relative w-full max-w-[750px] lg:w-[750px] h-auto rounded-2xl overflow-hidden shadow-xl" style={{ aspectRatio: '750/570' }}>
               <Image
                 src={activeLocation === 'TW' ? '/images/elements/AD-16.png' : '/images/elements/AD-15.png'}
                 alt={activeLocation === 'TW' ? 'Taiwan Book Club' : 'Netherlands Book Club'}
@@ -83,7 +81,7 @@ function JoinUsContent() {
 
           {/* Right: Signup Form */}
           <div className="flex justify-center lg:justify-start">
-            <div className={`w-full max-w-[520px] rounded-2xl p-6 lg:p-8 transition-colors duration-300 ${formBgClass}`}>
+            <div className={`w-full max-w-[600px] rounded-2xl p-6 lg:p-8 transition-colors duration-300 ${formBgClass}`}>
               <SignupForm
                 key={activeLocation}
                 location={activeLocation}
@@ -140,7 +138,7 @@ function JoinUsContent() {
 
             {/* Right: Detox Poster */}
             <div>
-              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[3/4]">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl" style={{ aspectRatio: '750/570' }}>
                 <Image
                   src="/images/elements/AD-17.png"
                   alt="Digital Detox"

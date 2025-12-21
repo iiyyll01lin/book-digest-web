@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { getRecentBooksSync, getLocalizedTitle } from '@/lib/books';
+import { getTopBooksByNumberSync, getLocalizedTitle } from '@/lib/books';
 import { BLUR_BOOK_COVER } from '@/lib/constants';
 
 export default async function BookWall() {
   const t = await getTranslations('home');
   const locale = await getLocale();
   
-  // Use pre-sorted function, avoid re-sorting on each render
-  const sortedBooks = getRecentBooksSync(40);
+  // Get top 30 books by cover number (largest numbers first)
+  const sortedBooks = getTopBooksByNumberSync(30);
 
   return (
     <section aria-labelledby="books-wall-heading" className="bg-brand-navy">

@@ -98,17 +98,20 @@ export default function PageFlipAnimation({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goNext, goPrev, gifSrc]);
 
-  // If a gif is provided, just render that
+  // If a gif is provided, just render that with rotation and loop
   if (gifSrc) {
     return (
       <div className={`relative ${className}`}>
-        <div className="relative w-full max-w-2xl mx-auto" style={{ aspectRatio: '4/3', minHeight: '300px' }}>
+        <div 
+          className="relative w-full max-w-3xl mx-auto transform rotate-[-3deg] hover:rotate-[-1deg] transition-transform duration-300" 
+          style={{ aspectRatio: '4/3', minHeight: '350px' }}
+        >
           <Image
             src={gifSrc}
             alt="Book flip animation"
             fill
-            sizes="(max-width: 768px) 100vw, 448px"
-            className="object-contain"
+            sizes="(max-width: 768px) 100vw, 600px"
+            className="object-contain drop-shadow-xl"
             unoptimized
           />
         </div>

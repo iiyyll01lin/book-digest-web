@@ -57,10 +57,18 @@ export default function Counter({ target, label }: { target: number; label: stri
 
   return (
     <div ref={ref} className="text-center">
-      <div className="text-sm text-white/70 font-outfit uppercase tracking-wider">
+      <div className="text-sm text-white/70 font-outfit uppercase tracking-wider mb-4">
         {label}
       </div>
-      <div className="text-7xl md:text-8xl font-extralight tabular-nums font-outfit mt-1">
+      <div 
+        className="tabular-nums font-outfit" 
+        style={{ 
+          fontSize: 'clamp(80px, 15vw, 130px)', 
+          fontWeight: 100, 
+          lineHeight: '1', 
+          letterSpacing: '-0.02em' 
+        }}
+      >
         {value.toLocaleString()}
       </div>
     </div>

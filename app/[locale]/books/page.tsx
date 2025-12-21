@@ -14,7 +14,13 @@ export default async function BooksPage({ params }: { params: Promise<{ locale: 
   setRequestLocale(locale);
   const t = await getTranslations('books');
 
-  const data = getBooksSync().map(b => getLocalizedBook(b, locale));
+  // Sort by coverUrl number (extracted from filename), smaller numbers last
+  const data = getBooksSync()
+    .map(b => ({
+      ...getLocalizedBook(b, locale),
+      sortOrder: b.coverUrl ? parseInt(b.coverUrl.match(/\/(\d+)_/)?.[1] || '0', 10) : 0,
+    }))
+    .sort((a, b) => b.sortOrder - a.sortOrder);
   return (
     <section className="bg-brand-navy text-white">
       <div className="mx-auto max-w-6xl px-6 py-10">
@@ -52,7 +58,10 @@ export default async function BooksPage({ params }: { params: Promise<{ locale: 
                   </div>
                 </div>
                 <div className="mt-3 text-sm group-hover:opacity-50 transition-opacity">
-                  <div className="font-semibold line-clamp-2 tracking-wide">{b.displayTitle}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-brand-pink font-bold text-xs">#{b.sortOrder}</span>
+                    <span className="font-semibold line-clamp-2 tracking-wide flex-1">{b.displayTitle}</span>
+                  </div>
                   <div className="text-white/70 mt-1">{b.author}</div>
                 </div>
               </Link>

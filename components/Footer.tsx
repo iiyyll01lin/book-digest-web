@@ -4,16 +4,14 @@ import Image from 'next/image';
 export default async function Footer() {
   const t = await getTranslations('footer');
   return (
-    <footer className="bg-brand-navy border-t border-white/10">
-      {/* Top divider with centered logo/text - smaller */}
+    <footer className="bg-brand-navy">
+      {/* Top divider with centered social icon */}
       <div className="mx-auto max-w-6xl px-6 pt-8">
         <div className="flex items-center gap-4">
           <div className="h-px flex-1 bg-white/30" />
-          <div className="flex items-center gap-2">
-            <a href="https://www.instagram.com/bookdigest_tw/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
-              <Image src="/images/logo/IG iocn.PNG" alt="Instagram" width={48} height={48} className="h-6 w-auto" unoptimized />
-            </a>
-          </div>
+          <a href="https://www.instagram.com/bookdigest_tw/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+            <Image src="/images/logo/IG iocn.PNG" alt="Instagram" width={48} height={48} className="h-6 w-auto" unoptimized />
+          </a>
           <div className="h-px flex-1 bg-white/30" />
         </div>
       </div>
