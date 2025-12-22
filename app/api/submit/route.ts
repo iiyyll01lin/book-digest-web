@@ -11,26 +11,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid location' }, { status: 400 });
     }
 
-  const body = await req.json();
-  const hdrs = headers();
-  const visitorId = hdrs.get('x-visitor-id') || null; // Optional: client may send an anonymous visitor id
+    const body = await req.json();
+    const hdrs = headers();
+    const visitorId = hdrs.get('x-visitor-id') || null; // Optional: client may send an anonymous visitor id
+
+    // Backward-compat: accept either { name } or { firstName, lastName }
+    const rawName = String(body.name || '').trim();
+    const firstName = String(body.firstName || '').trim();
+    const lastName = String(body.lastName || '').trim();
+    const name = rawName || `${firstName} ${lastName}`.trim();
+
     // Minimal validation mirror of client
     const payload: RegistrationInput = {
       location: loc,
-      firstName: String(body.firstName || '').trim(),
-      lastName: String(body.lastName || '').trim(),
+      name,
       age: Number(body.age),
       profession: String(body.profession || '').trim(),
       email: String(body.email || '').trim(),
       instagram: body.instagram ? String(body.instagram) : undefined,
       referral: body.referral as RegistrationInput['referral'],
       referralOther: body.referralOther ? String(body.referralOther) : undefined,
-      consent: Boolean(body.consent),
       timestamp: body.timestamp,
+      visitorId: visitorId || undefined,
     };
 
     // Basic guards
-    if (!payload.firstName || !payload.lastName || !payload.email || !Number.isInteger(payload.age)) {
+    if (!payload.name || !payload.email || !payload.profession || !Number.isInteger(payload.age)) {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
     }
     if (!['Instagram', 'Facebook', 'Others'].includes(payload.referral)) {
@@ -38,9 +44,6 @@ export async function POST(req: NextRequest) {
     }
     if (payload.referral === 'Others' && (!payload.referralOther || payload.referralOther.trim().length < 2)) {
       return NextResponse.json({ error: 'Invalid referralOther' }, { status: 400 });
-    }
-    if (!payload.consent) {
-      return NextResponse.json({ error: 'Consent required' }, { status: 400 });
     }
 
     // 1) Optional Tally forward. Use per-location endpoint if provided.
@@ -52,7 +55,7 @@ export async function POST(req: NextRequest) {
       // Map payload to the requested column names for Tally or generic webhook.
       const tallyBody = {
         // Preferred columns from user request
-        Name: `${payload.firstName} ${payload.lastName}`.trim(),
+        Name: payload.name,
         Email: payload.email,
         Age: payload.age,
         Occupation: payload.profession,
@@ -64,7 +67,7 @@ export async function POST(req: NextRequest) {
         status: 'new',
         Owner: '',
         ID: cryptoRandomId(),
-        Title: `${payload.firstName} ${payload.lastName} — ${payload.location}`.trim(),
+        Title: `${payload.name} — ${payload.location}`.trim(),
         visitorId: visitorId || '',
         bankAccount: '',
         // Timestamps for convenience (Tally can also store submission time)
@@ -89,8 +92,16 @@ export async function POST(req: NextRequest) {
     const dbId = process.env.NOTION_DB_ID;
     const token = process.env.NOTION_TOKEN;
 
+    console.info('[api/submit] routing', {
+      loc,
+      hasTallyEndpoint: Boolean(tallyEndpoint),
+      saveAlsoToNotion,
+      hasNotionDbId: Boolean(dbId),
+      hasNotionToken: Boolean(token),
+    });
+
     if (saveAlsoToNotion && dbId && token) {
-      const result = await saveRegistrationToNotion(dbId, { ...payload, visitorId: visitorId || undefined });
+      const result = await saveRegistrationToNotion(dbId, payload);
       return NextResponse.json({ ok: true, id: (result as { id: string }).id }, { status: 201 });
     }
 

@@ -10,15 +10,13 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 
 export type RegistrationInput = {
   location: 'TW' | 'NL';
-  firstName: string;
-  lastName: string;
+  name: string;
   age: number;
   profession: string;
   email: string;
   instagram?: string;
   referral: 'Instagram' | 'Facebook' | 'Others';
   referralOther?: string;
-  consent: boolean;
   timestamp?: string; // ISO
   visitorId?: string;
 };
@@ -43,7 +41,7 @@ export async function saveRegistrationToNotion(dbId: string, data: RegistrationI
   if (!notion) throw new Error('NOTION_TOKEN is not configured');
 
   // Compose values
-  const fullName = `${data.firstName} ${data.lastName}`.trim();
+  const fullName = data.name.trim();
   const titleText = `${fullName} — ${data.location}`;
   const idText = cryptoRandomId();
 
@@ -68,6 +66,7 @@ export async function saveRegistrationToNotion(dbId: string, data: RegistrationI
     Title: TitleProp;
     Name: RichTextProp;
     Email: EmailProp;
+    Location: SelectProp;
     Age: NumberProp;
     Occupation: RichTextProp;
     InstagramAccount: RichTextProp;
@@ -81,7 +80,9 @@ export async function saveRegistrationToNotion(dbId: string, data: RegistrationI
     Title: { title: [{ type: 'text', text: { content: titleText } }] },
     Name: { rich_text: [{ type: 'text', text: { content: fullName } }] },
     Email: { email: data.email },
+    Location: { select: { name: data.location } },
     Age: { number: isFinite(data.age) ? data.age : null },
+    // Notion "Occupation" property is filled from form field "profession"
     Occupation: { rich_text: [{ type: 'text', text: { content: data.profession } }] },
     InstagramAccount: data.instagram
       ? { rich_text: [{ type: 'text', text: { content: data.instagram } }] }
@@ -149,12 +150,14 @@ export async function listRegistrations(dbId: string, limit = 10) {
     };
     const emailProp = props.Email as { email?: string } | undefined;
     const ageProp = props.Age as { number?: number } | undefined;
+    const locationProp = props.Location as { select?: { name?: string } } | undefined;
     const findingUsProp = props.FindingUs as { select?: { name?: string } } | undefined;
     return {
       id: p.id,
       title: getTitle(props.Title),
       name: getText(props.Name),
       email: (emailProp && typeof emailProp.email === 'string') ? emailProp.email : '',
+      location: (locationProp && locationProp.select && typeof locationProp.select.name === 'string') ? locationProp.select.name : '',
       age: (ageProp && typeof ageProp.number === 'number') ? ageProp.number : null,
       occupation: getText(props.Occupation),
       instagram: getText(props.InstagramAccount),
