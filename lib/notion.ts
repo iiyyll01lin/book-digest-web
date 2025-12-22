@@ -92,6 +92,7 @@ export async function saveRegistrationToNotion(dbId: string, data: RegistrationI
       ? { rich_text: [{ type: 'text', text: { content: data.referralOther } }] }
       : { rich_text: [] },
     ID: { rich_text: [{ type: 'text', text: { content: idText } }] },
+    'Created Date': { date: { start: data.timestamp || new Date().toISOString() } },
   };
 
   if (data.visitorId) {
@@ -109,7 +110,8 @@ export async function saveRegistrationToNotion(dbId: string, data: RegistrationI
   type EmailInput = { email: string };
   type NumberInput = { number: number | null };
   type SelectInput = { select: { name: string } };
-  type NotionPropsShape = Record<string, TitleInput | RichTextInput | EmailInput | NumberInput | SelectInput>;
+  type DateInput = { date: { start: string } };
+  type NotionPropsShape = Record<string, TitleInput | RichTextInput | EmailInput | NumberInput | SelectInput | DateInput>;
   const res = await notion.pages.create({
     parent: { database_id: dbId },
     properties: properties as unknown as NotionPropsShape,

@@ -40,10 +40,10 @@ export default function HomeHero() {
               </div>
             </div>
             {/* Page Flip Animation - enlarged for better visibility */}
-            <div className="mt-10 md:mt-0">
+            <div className="mt-10 md:mt-0 w-full overflow-hidden">
               <PageFlipAnimation
                 gifSrc="/images/notebook/notebook.gif"
-                className="w-full max-w-3xl mx-auto md:ml-auto md:mr-0"
+                className="w-full max-w-full md:max-w-3xl mx-auto md:ml-auto md:mr-0"
               />
             </div>
           </div>
