@@ -64,11 +64,13 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         
-        {/* Favicon and PWA */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
+          {/* Favicon 根據語系切換（ico 格式） */}
+          {locale === 'en' ? (
+            <link rel="icon" href="/images/favicon-en.ico" type="image/x-icon" />
+          ) : (
+            <link rel="icon" href="/images/favicon-zh.ico" type="image/x-icon" />
+          )}
+          <link rel="manifest" href="/site.webmanifest" />
         {/* Alternate languages */}
         <link rel="alternate" hrefLang="en" href="https://bookdigest.club/en" />
         <link rel="alternate" hrefLang="zh-TW" href="https://bookdigest.club/zh" />
